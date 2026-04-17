@@ -26,6 +26,21 @@ export default async function handler(req, res) {
       }
     );
 
+    // First, get all users to see if table is accessible
+    const { data: allUsers, error: allError } = await supabase
+      .from('admin_users')
+      .select('username');
+
+    if (allError) {
+      return res.status(200).json({
+        success: false,
+        error: 'Cannot access table',
+        tableError: allError.message,
+        allUsers: []
+      });
+    }
+
+    // Now search for the specific user
     const { data, error } = await supabase
       .from('admin_users')
       .select('id, username, password_hash')
@@ -36,7 +51,9 @@ export default async function handler(req, res) {
       return res.status(200).json({
         success: false,
         error: 'User not found',
-        username_requested: username
+        username_requested: username,
+        allUsers: allUsers.map(u => u.username),
+        queryError: error?.message
       });
     }
 
