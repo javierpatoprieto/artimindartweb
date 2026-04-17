@@ -1,11 +1,15 @@
 import { supabaseAdmin } from '../../lib/supabase.js';
-import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     return handleLogin(req, res);
   }
   return res.status(405).json({ error: 'Method not allowed' });
+}
+
+function hashPassword(password) {
+  return crypto.createHash('sha256').update(password + 'salt').digest('hex');
 }
 
 async function handleLogin(req, res) {
@@ -28,8 +32,8 @@ async function handleLogin(req, res) {
     }
 
     // Verify password
-    const isValid = await bcrypt.compare(password, data.password_hash);
-    if (!isValid) {
+    const passwordHash = hashPassword(password);
+    if (passwordHash !== data.password_hash) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
