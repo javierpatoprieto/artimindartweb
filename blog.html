@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Blog — ArtiMindArt | AI Expert</title>
+    <meta name="description" content="AI insights, tutorials, strategies and trends from ArtiMindArt. Learn how to leverage AI for your business.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Blog — ArtiMindArt">
+    <meta property="og:description" content="AI insights, tutorials, strategies and trends from ArtiMindArt.">
+    <meta property="og:site_name" content="ArtiMindArt">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@artimindArt">
+    <meta name="twitter:title" content="Blog — ArtiMindArt">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .blog-hero{padding:140px 0 60px;text-align:center}
+        .blog-hero h1{font-family:var(--display);font-size:clamp(2.5rem,5vw,3.5rem);font-weight:700;letter-spacing:-.03em;margin-bottom:12px}
+        .blog-hero p{color:var(--t2);font-size:1.05rem;max-width:500px;margin:0 auto}
+
+        .blog-filters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:48px}
+        .blog-filter{padding:8px 20px;border-radius:30px;font-size:13px;font-weight:600;font-family:var(--display);
+            background:var(--surface);border:1px solid var(--b1);color:var(--t2);cursor:pointer;transition:all .2s var(--ease)}
+        .blog-filter:hover{background:var(--surface-h);color:var(--t1)}
+        .blog-filter.active{background:var(--lime);color:#06060a;border-color:var(--lime)}
+
+        .blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:28px;margin-bottom:80px}
+
+        .blog-card{background:var(--surface);border:1px solid var(--b1);border-radius:var(--r-card);overflow:hidden;transition:all .3s var(--ease)}
+        .blog-card:hover{border-color:var(--b2);transform:translateY(-4px)}
+        .bc-image{height:200px;display:flex;align-items:flex-start;padding:16px;position:relative}
+        .bc-cat{display:inline-block;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--display);
+            background:rgba(0,0,0,.6);backdrop-filter:blur(8px);color:var(--lime);letter-spacing:.5px;text-transform:uppercase}
+        .bc-body{padding:24px}
+        .bc-body time{font-size:12px;color:var(--t3);font-family:var(--display);text-transform:uppercase;letter-spacing:1px}
+        .bc-body h3{font-family:var(--display);font-size:1.15rem;font-weight:700;line-height:1.3;margin:8px 0 10px;letter-spacing:-.01em}
+        .bc-body p{font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:16px;
+            display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+        .bc-link{font-size:13px;font-weight:600;font-family:var(--display);color:var(--lime);transition:gap .2s}
+        .bc-link:hover{text-decoration:underline}
+
+        .blog-empty{text-align:center;padding:80px 0;color:var(--t3);font-size:1rem}
+
+        .nl-section{padding:80px 0;border-top:1px solid var(--b1)}
+        .nl-section .nl-inner{display:flex;align-items:center;justify-content:space-between;gap:32px;
+            background:var(--surface);border:1px solid var(--b1);border-radius:var(--r-card);padding:40px}
+        .nl-section .nl-inner h3{font-family:var(--display);font-size:1.4rem;font-weight:700;margin-bottom:6px}
+        .nl-section .nl-inner p{color:var(--t2);font-size:14px}
+        .nl-section .nl-form{display:flex;gap:10px}
+        .nl-section .nl-form input{padding:12px 18px;border-radius:var(--r);border:1px solid var(--b1);background:var(--bg);
+            color:var(--t1);font-family:var(--body);font-size:14px;outline:none;min-width:240px}
+        .nl-section .nl-form input:focus{border-color:var(--lime)}
+
+        @media(max-width:640px){
+            .blog-grid{grid-template-columns:1fr}
+            .nl-section .nl-inner{flex-direction:column;text-align:center}
+            .nl-section .nl-form{flex-direction:column;width:100%}
+            .nl-section .nl-form input{min-width:auto;width:100%}
+        }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+
+    <!-- Nav -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-pill">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-text">artimind<span class="logo-accent">.art</span></span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#work">Work</a></li>
+                <li><a href="index.html#partners">Partners</a></li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+            <div class="nav-right">
+                <a href="index.html#contact" class="btn btn-primary btn-nav">Let's talk</a>
+                <button class="nav-toggle" id="navToggle" aria-label="Menu">
+                    <span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="blog-hero">
+        <div class="container">
+            <span class="section-label">Blog</span>
+            <h1>AI Insights & <span class="text-accent">Tutorials</span></h1>
+            <p>Strategies, trends and hands-on guides to help you leverage AI for real results.</p>
+        </div>
+    </header>
+
+    <!-- Filters + Grid -->
+    <section class="container">
+        <div class="blog-filters" id="blogFilters">
+            <button class="blog-filter active" data-cat="all">All</button>
+            <button class="blog-filter" data-cat="Tutorial">Tutorial</button>
+            <button class="blog-filter" data-cat="Strategy">Strategy</button>
+            <button class="blog-filter" data-cat="Trends">Trends</button>
+            <button class="blog-filter" data-cat="Case Study">Case Study</button>
+            <button class="blog-filter" data-cat="News">News</button>
+        </div>
+        <div class="blog-grid" id="blogGrid"></div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="nl-section">
+        <div class="container">
+            <div class="nl-inner">
+                <div>
+                    <h3>Learn AI. Smarter. Faster.</h3>
+                    <p>Exclusive prompts, tutorials & AI insights — free.</p>
+                </div>
+                <form class="nl-form" id="nlForm">
+                    <input type="email" placeholder="you@email.com" required>
+                    <button class="btn btn-primary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="index.html" class="nav-logo"><span class="logo-text">artimind<span class="logo-accent">.art</span></span></a>
+                    <p>AI Expert & Creative Technologist</p>
+                </div>
+                <nav class="footer-nav">
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#services">Services</a>
+                    <a href="index.html#work">Work</a>
+                    <a href="index.html#partners">Partners</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="index.html#contact">Contact</a>
+                </nav>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ArtiMindArt. All rights reserved. Made with AI & love from Spain.</p>
+                <a href="admin.html" class="footer-admin-link">Admin</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Navbar scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', scrollY > 60);
+        }, { passive: true });
+
+        // Mobile nav
+        const toggle = document.getElementById('navToggle');
+        const links = document.getElementById('navLinks');
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('active');
+            links.classList.toggle('active');
+        });
+
+        // Newsletter
+        const nf = document.getElementById('nlForm');
+        if (nf) nf.addEventListener('submit', e => {
+            e.preventDefault();
+            const btn = nf.querySelector('button');
+            const orig = btn.textContent;
+            btn.textContent = 'Subscribed!';
+            nf.reset();
+            setTimeout(() => btn.textContent = orig, 3000);
+        });
+
+        // Load posts
+        const posts = JSON.parse(localStorage.getItem('artimind_blog_posts') || '[]');
+        const published = posts.filter(p => p.status === 'published').sort((a,b) => new Date(b.date) - new Date(a.date));
+        const grid = document.getElementById('blogGrid');
+
+        function renderPosts(filter) {
+            const filtered = filter === 'all' ? published : published.filter(p => p.category === filter);
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="blog-empty">No posts found in this category.</div>';
+                return;
+            }
+            grid.innerHTML = filtered.map(post => `
+                <article class="blog-card" data-cat="${post.category}">
+                    <a href="post.html#${post.slug}" style="text-decoration:none;color:inherit">
+                        <div class="bc-image" style="background:${post.image ? `url(${post.image}) center/cover` : 'linear-gradient(135deg,#1a1a2e,#16213e)'}">
+                            <span class="bc-cat">${post.category}</span>
+                        </div>
+                        <div class="bc-body">
+                            <time>${new Date(post.date).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'})}</time>
+                            <h3>${post.title}</h3>
+                            <p>${post.excerpt}</p>
+                            <span class="bc-link">Read more &rarr;</span>
+                        </div>
+                    </a>
+                </article>
+            `).join('');
+        }
+
+        renderPosts('all');
+
+        // Filter pills
+        document.querySelectorAll('.blog-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.blog-filter').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderPosts(btn.dataset.cat);
+            });
+        });
+    });
+    </script>
+</body>
+</html>

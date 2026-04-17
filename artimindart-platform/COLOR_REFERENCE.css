@@ -1,0 +1,371 @@
+/**
+ * ============================================
+ * ArtiMindArt - COLOR REFERENCE CSS
+ * ============================================
+ * Valores exactos de la paleta premium
+ * Usar como referencia para validación de colores
+ */
+
+/* ============================================
+   1. GRISES SOFISTICADOS (Charcoal)
+   ============================================ */
+
+:root {
+  /* Light grays (backgrounds claros) */
+  --charcoal-50: #fafaf8;      /* Blanco cálido - para backgrounds */
+  --charcoal-100: #f4f4f2;     /* Base light principal */
+  --charcoal-150: #e8e8e5;     /* Dividers, subtle borders */
+  --charcoal-200: #d9d9d5;     /* Secondary light */
+  --charcoal-300: #c0c0ba;     /* Medium-light accents */
+
+  /* Medium grays (UI elements) */
+  --charcoal-400: #a8a89f;     /* Medium neutral */
+  --charcoal-500: #8f8f86;     /* Medium-dark */
+  --charcoal-600: #6b6b62;     /* Dark gray (texto secundario) */
+
+  /* Dark grays (backgrounds oscuros) */
+  --charcoal-700: #4a4a42;     /* Darker */
+  --charcoal-800: #2a2a22;     /* Very dark (hover states) */
+  --charcoal-900: #0a0a0a;     /* Black puro (primario) */
+  --charcoal-950: #050505;     /* Near black (casi nada) */
+}
+
+/* ============================================
+   2. ACCENTS PREMIUM (Refined Neons)
+   ============================================ */
+
+:root {
+  /* Pink - Primary Accent */
+  --accent-pink: #d946a6;           /* Magenta sofisticado */
+  --accent-pink-light: #e96bb9;     /* Variante clara */
+
+  /* Cyan - Tech Accent */
+  --accent-cyan: #0891b2;           /* Cyan sofisticado */
+  --accent-cyan-light: #06b6d4;     /* Variante clara */
+
+  /* Emerald - Green Luxury */
+  --accent-emerald: #059669;        /* Verde sofisticado */
+
+  /* Amber - Warm Accent */
+  --accent-amber: #b45309;          /* Ámbar premium */
+}
+
+/* ============================================
+   3. LUXURY ACCENTS (Gold & Silver)
+   ============================================ */
+
+:root {
+  /* Gold - Premium/Luxury */
+  --gold-light: #fef3c7;    /* Pale gold - backgrounds */
+  --gold-base: #fbbf24;     /* Gold premium - accents */
+  --gold-dark: #d97706;     /* Gold accent - hover */
+
+  /* Silver - Luxury/Tech */
+  --silver-light: #f8f8f8;  /* Light silver */
+  --silver-base: #e5e7eb;   /* Silver medium */
+  --silver-dark: #9ca3af;   /* Silver accent */
+}
+
+/* ============================================
+   4. HOVER/FOCUS SHADOWS (Glow Effects)
+   ============================================ */
+
+:root {
+  /* Pink glow shadows */
+  --shadow-hover-sm: 0 4px 12px rgba(217, 70, 166, 0.15);
+  --shadow-hover-md: 0 8px 24px rgba(217, 70, 166, 0.2);
+  --shadow-hover-lg: 0 12px 32px rgba(217, 70, 166, 0.25);
+
+  /* Elevation shadows */
+  --shadow-elevation-1: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-elevation-2: 0 3px 6px rgba(0, 0, 0, 0.15);
+  --shadow-elevation-3: 0 10px 20px rgba(0, 0, 0, 0.19);
+  --shadow-elevation-4: 0 15px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* ============================================
+   5. GRADIENTES PREMIUM
+   ============================================ */
+
+:root {
+  /* Fondo oscuro profesional */
+  --gradient-dark: linear-gradient(135deg, #0a0a0a 0%, #2a2a22 100%);
+
+  /* Accent vibrante (pink → cyan) */
+  --gradient-accent: linear-gradient(135deg, #d946a6 0%, #0891b2 100%);
+
+  /* Luxury gold */
+  --gradient-gold: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);
+
+  /* Subtle light backgrounds */
+  --gradient-subtle: linear-gradient(135deg, #f4f4f2 0%, #e8e8e5 100%);
+}
+
+/* ============================================
+   6. EJEMPLOS DE USO - COMPONENTES
+   ============================================ */
+
+/* ---- BOTÓN PRIMARY ---- */
+.btn-primary {
+  background-color: var(--charcoal-900);
+  color: white;
+  box-shadow: var(--shadow-elevation-2);
+  transition: all 300ms ease-out;
+}
+
+.btn-primary:hover {
+  background-color: var(--charcoal-800);
+  box-shadow: var(--shadow-hover-md);
+  transform: scale(1.05);
+}
+
+.btn-primary:active {
+  transform: scale(0.95);
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: var(--shadow-elevation-2),
+              0 0 0 3px rgba(217, 70, 166, 0.1),
+              0 0 0 1.5px #d946a6;
+}
+
+/* ---- BOTÓN SECONDARY ---- */
+.btn-secondary {
+  border: 2px solid var(--charcoal-900);
+  color: var(--charcoal-900);
+  background-color: var(--charcoal-50);
+  transition: all 300ms ease-out;
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent-pink);
+  color: var(--accent-pink);
+  background-color: var(--charcoal-100);
+  box-shadow: var(--shadow-hover-sm);
+}
+
+.btn-secondary:active {
+  background-color: var(--charcoal-150);
+  transform: scale(0.95);
+}
+
+/* ---- LINK PREMIUM ---- */
+.link-premium {
+  color: var(--charcoal-900);
+  border-bottom: 2px solid transparent;
+  transition: all 300ms ease-out;
+}
+
+.link-premium:hover {
+  color: var(--accent-pink);
+  border-bottom-color: var(--accent-pink);
+}
+
+/* ---- CARD ELEVADO ---- */
+.card-premium {
+  background-color: var(--charcoal-100);
+  border-radius: 8px;
+  box-shadow: var(--shadow-elevation-2);
+  transition: all 300ms ease-out;
+  padding: 32px;
+}
+
+.card-premium:hover {
+  box-shadow: var(--shadow-elevation-3);
+  transform: scale(1.02);
+}
+
+/* ---- HERO SECTION ---- */
+.section-hero {
+  background: var(--gradient-dark);
+  color: var(--charcoal-50);
+  padding: 96px 32px;
+  text-align: center;
+}
+
+.section-hero h1 {
+  color: var(--charcoal-50);
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.section-hero p {
+  color: var(--charcoal-300);
+  font-size: 20px;
+  max-width: 512px;
+  margin: 0 auto 48px;
+}
+
+/* ---- ACCENT SECTION (CTA) ---- */
+.section-accent {
+  background: var(--gradient-accent);
+  color: white;
+  padding: 64px 32px;
+  text-align: center;
+}
+
+/* ---- INPUT FORM ---- */
+.input-premium {
+  border: 1px solid var(--charcoal-200);
+  background-color: white;
+  color: var(--charcoal-900);
+  padding: 12px 16px;
+  border-radius: 6px;
+  transition: all 300ms ease-out;
+}
+
+.input-premium:hover {
+  border-color: var(--charcoal-300);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.input-premium:focus {
+  outline: none;
+  border-color: var(--accent-pink);
+  box-shadow: 0 0 0 3px rgba(217, 70, 166, 0.1),
+              0 0 0 1px var(--accent-pink);
+}
+
+/* ---- BADGE/TAG ---- */
+.badge-pink {
+  background-color: var(--accent-pink);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.badge-cyan {
+  background-color: var(--accent-cyan);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-gold {
+  background-color: var(--gold-base);
+  color: var(--charcoal-900);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ============================================
+   7. ANIMACIONES
+   ============================================ */
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* ============================================
+   8. UTILIDADES DE TEXTO
+   ============================================ */
+
+/* Texto primario */
+.text-primary {
+  color: var(--charcoal-900);
+}
+
+/* Texto secundario */
+.text-secondary {
+  color: var(--charcoal-600);
+}
+
+/* Texto accent */
+.text-accent {
+  color: var(--accent-pink);
+}
+
+/* Texto light (en backgrounds oscuros) */
+.text-light {
+  color: var(--charcoal-50);
+}
+
+/* ============================================
+   9. UTILIDADES DE BACKGROUND
+   ============================================ */
+
+/* Light backgrounds */
+.bg-light {
+  background-color: var(--charcoal-50);
+}
+
+.bg-light-secondary {
+  background-color: var(--charcoal-100);
+}
+
+/* Dark backgrounds */
+.bg-dark {
+  background-color: var(--charcoal-900);
+}
+
+.bg-dark-secondary {
+  background-color: var(--charcoal-800);
+}
+
+/* Gradient backgrounds */
+.bg-dark-gradient {
+  background: var(--gradient-dark);
+}
+
+.bg-accent-gradient {
+  background: var(--gradient-accent);
+}
+
+.bg-gold-gradient {
+  background: var(--gradient-gold);
+}
+
+/* ============================================
+   10. UTILIDADES DE BORDES
+   ============================================ */
+
+.border-light {
+  border-color: var(--charcoal-150);
+}
+
+.border-medium {
+  border-color: var(--charcoal-300);
+}
+
+.border-accent {
+  border-color: var(--accent-pink);
+}
+
+/* ============================================
+   REFERENCIA RÁPIDA - VALORES HEX
+   ============================================
+
+   GRISES (Charcoal):
+   50: #fafaf8    | 100: #f4f4f2   | 150: #e8e8e5   | 200: #d9d9d5
+   300: #c0c0ba   | 400: #a8a89f   | 500: #8f8f86   | 600: #6b6b62
+   700: #4a4a42   | 800: #2a2a22   | 900: #0a0a0a   | 950: #050505
+
+   ACCENTS:
+   Pink:     #d946a6       | Pink-Light:  #e96bb9
+   Cyan:     #0891b2       | Cyan-Light:  #06b6d4
+   Emerald:  #059669       | Amber:       #b45309
+
+   LUXURY:
+   Gold:     #fbbf24       | Gold-Dark:   #d97706   | Silver: #e5e7eb
+
+   GRADIENTS:
+   Dark:     135deg, #0a0a0a 0%, #2a2a22 100%
+   Accent:   135deg, #d946a6 0%, #0891b2 100%
+   Gold:     135deg, #fbbf24 0%, #b45309 100%
+   Subtle:   135deg, #f4f4f2 0%, #e8e8e5 100%
+*/

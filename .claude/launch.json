@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "artimind-site",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "artimindart-platform", "run", "dev"],
+      "port": 3000
+    }
+  ]
+}

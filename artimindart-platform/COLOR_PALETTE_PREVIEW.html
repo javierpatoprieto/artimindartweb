@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArtiMindArt - Color Palette Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      /* Grises */
+      --charcoal-50: #fafaf8;
+      --charcoal-100: #f4f4f2;
+      --charcoal-150: #e8e8e5;
+      --charcoal-200: #d9d9d5;
+      --charcoal-300: #c0c0ba;
+      --charcoal-400: #a8a89f;
+      --charcoal-500: #8f8f86;
+      --charcoal-600: #6b6b62;
+      --charcoal-700: #4a4a42;
+      --charcoal-800: #2a2a22;
+      --charcoal-900: #0a0a0a;
+      --charcoal-950: #050505;
+
+      /* Accents */
+      --accent-pink: #d946a6;
+      --accent-pink-light: #e96bb9;
+      --accent-cyan: #0891b2;
+      --accent-cyan-light: #06b6d4;
+      --accent-emerald: #059669;
+      --accent-amber: #b45309;
+
+      /* Luxury */
+      --gold-light: #fef3c7;
+      --gold-base: #fbbf24;
+      --gold-dark: #d97706;
+      --silver-light: #f8f8f8;
+      --silver-base: #e5e7eb;
+      --silver-dark: #9ca3af;
+    }
+
+    .color-swatch {
+      width: 100%;
+      padding: 24px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 120px;
+      transition: transform 300ms ease-out, box-shadow 300ms ease-out;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 24px rgba(217, 70, 166, 0.2);
+    }
+
+    .color-label {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .color-value {
+      font-family: monospace;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .btn-demo {
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: all 300ms ease-out;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-primary-demo {
+      background-color: var(--charcoal-900);
+      color: white;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary-demo:hover {
+      background-color: var(--charcoal-800);
+      box-shadow: 0 8px 24px rgba(217, 70, 166, 0.2);
+      transform: scale(1.05);
+    }
+
+    .btn-primary-demo:active {
+      transform: scale(0.95);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+
+    .btn-secondary-demo {
+      background-color: var(--charcoal-50);
+      color: var(--charcoal-900);
+      border: 2px solid var(--charcoal-900);
+    }
+
+    .btn-secondary-demo:hover {
+      border-color: var(--accent-pink);
+      color: var(--accent-pink);
+      background-color: var(--charcoal-100);
+      box-shadow: 0 4px 12px rgba(217, 70, 166, 0.15);
+    }
+
+    .btn-secondary-demo:active {
+      transform: scale(0.95);
+    }
+
+    .btn-accent-demo {
+      background-color: var(--accent-pink);
+      color: white;
+    }
+
+    .btn-accent-demo:hover {
+      background-color: var(--accent-pink-light);
+      transform: scale(1.05);
+      box-shadow: 0 8px 24px rgba(217, 70, 166, 0.3);
+    }
+
+    .section-hero {
+      background: linear-gradient(135deg, var(--charcoal-900) 0%, var(--charcoal-800) 100%);
+      color: var(--charcoal-50);
+    }
+
+    .section-accent {
+      background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-cyan) 100%);
+      color: white;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    .badge-glow {
+      animation: glowPulse 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-white">
+  <!-- Header -->
+  <header class="bg-white border-b border-charcoal-200 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-8 py-6">
+      <h1 class="text-4xl font-bold text-charcoal-900">ArtiMindArt</h1>
+      <p class="text-charcoal-600 mt-2">Paleta de Colores Premium - Preview Interactivo</p>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <div class="bg-charcoal-50 border-b border-charcoal-150">
+    <div class="max-w-6xl mx-auto px-8 py-4 flex gap-4 flex-wrap">
+      <a href="#grises" class="px-4 py-2 rounded text-charcoal-900 hover:bg-charcoal-100">Grises</a>
+      <a href="#accents" class="px-4 py-2 rounded text-charcoal-900 hover:bg-charcoal-100">Accents</a>
+      <a href="#luxury" class="px-4 py-2 rounded text-charcoal-900 hover:bg-charcoal-100">Luxury</a>
+      <a href="#componentes" class="px-4 py-2 rounded text-charcoal-900 hover:bg-charcoal-100">Componentes</a>
+      <a href="#gradientes" class="px-4 py-2 rounded text-charcoal-900 hover:bg-charcoal-100">Gradientes</a>
+    </div>
+  </div>
+
+  <main class="max-w-6xl mx-auto px-8 py-12">
+
+    <!-- ========================
+         GRISES SOFISTICADOS
+         ======================== -->
+    <section id="grises" class="mb-16">
+      <h2 class="text-3xl font-bold text-charcoal-900 mb-8">1. Grises Sofisticados (Charcoal)</h2>
+      <p class="text-charcoal-600 mb-8">12 variaciones para backgrounds, texto y UI elements</p>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <!-- 50 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-50); color: var(--charcoal-900);">
+          <div>
+            <div class="color-label">Charcoal 50</div>
+            <div class="color-value">#fafaf8</div>
+          </div>
+          <div class="color-value">Blanco cálido</div>
+        </div>
+
+        <!-- 100 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-100); color: var(--charcoal-900);">
+          <div>
+            <div class="color-label">Charcoal 100</div>
+            <div class="color-value">#f4f4f2</div>
+          </div>
+          <div class="color-value">Base light</div>
+        </div>
+
+        <!-- 150 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-150); color: var(--charcoal-900);">
+          <div>
+            <div class="color-label">Charcoal 150</div>
+            <div class="color-value">#e8e8e5</div>
+          </div>
+          <div class="color-value">Dividers</div>
+        </div>
+
+        <!-- 200 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-200); color: var(--charcoal-900);">
+          <div>
+            <div class="color-label">Charcoal 200</div>
+            <div class="color-value">#d9d9d5</div>
+          </div>
+          <div class="color-value">Secondary</div>
+        </div>
+
+        <!-- 300 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-300); color: var(--charcoal-900);">
+          <div>
+            <div class="color-label">Charcoal 300</div>
+            <div class="color-value">#c0c0ba</div>
+          </div>
+          <div class="color-value">Medium-light</div>
+        </div>
+
+        <!-- 400 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-400); color: white;">
+          <div>
+            <div class="color-label">Charcoal 400</div>
+            <div class="color-value">#a8a89f</div>
+          </div>
+          <div class="color-value">Medium</div>
+        </div>
+
+        <!-- 500 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-500); color: white;">
+          <div>
+            <div class="color-label">Charcoal 500</div>
+            <div class="color-value">#8f8f86</div>
+          </div>
+          <div class="color-value">Medium-dark</div>
+        </div>
+
+        <!-- 600 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-600); color: white;">
+          <div>
+            <div class="color-label">Charcoal 600</div>
+            <div class="color-value">#6b6b62</div>
+          </div>
+          <div class="color-value">Text secondary</div>
+        </div>
+
+        <!-- 700 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-700); color: white;">
+          <div>
+            <div class="color-label">Charcoal 700</div>
+            <div class="color-value">#4a4a42</div>
+          </div>
+          <div class="color-value">Darker</div>
+        </div>
+
+        <!-- 800 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-800); color: white;">
+          <div>
+            <div class="color-label">Charcoal 800</div>
+            <div class="color-value">#2a2a22</div>
+          </div>
+          <div class="color-value">Very dark</div>
+        </div>
+
+        <!-- 900 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-900); color: white;">
+          <div>
+            <div class="color-label">Charcoal 900</div>
+            <div class="color-value">#0a0a0a</div>
+          </div>
+          <div class="color-value">Black puro</div>
+        </div>
+
+        <!-- 950 -->
+        <div class="color-swatch" style="background-color: var(--charcoal-950); color: white;">
+          <div>
+            <div class="color-label">Charcoal 950</div>
+            <div class="color-value">#050505</div>
+          </div>
+          <div class="color-value">Near black</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================
+         ACCENTS PREMIUM
+         ======================== -->
+    <section id="accents" class="mb-16">
+      <h2 class="text-3xl font-bold text-charcoal-900 mb-8">2. Accents Premium (Refined Neons)</h2>
+      <p class="text-charcoal-600 mb-8">6 opciones sofisticadas, no agresivas</p>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <!-- Pink -->
+        <div class="color-swatch" style="background-color: var(--accent-pink); color: white;">
+          <div>
+            <div class="color-label">Accent Pink</div>
+            <div class="color-value">#d946a6</div>
+          </div>
+          <div class="color-value">Primary Accent</div>
+        </div>
+
+        <!-- Pink Light -->
+        <div class="color-swatch" style="background-color: var(--accent-pink-light); color: white;">
+          <div>
+            <div class="color-label">Pink Light</div>
+            <div class="color-value">#e96bb9</div>
+          </div>
+          <div class="color-value">Variante clara</div>
+        </div>
+
+        <!-- Cyan -->
+        <div class="color-swatch" style="background-color: var(--accent-cyan); color: white;">
+          <div>
+            <div class="color-label">Accent Cyan</div>
+            <div class="color-value">#0891b2</div>
+          </div>
+          <div class="color-value">Tech Accent</div>
+        </div>
+
+        <!-- Cyan Light -->
+        <div class="color-swatch" style="background-color: var(--accent-cyan-light); color: white;">
+          <div>
+            <div class="color-label">Cyan Light</div>
+            <div class="color-value">#06b6d4</div>
+          </div>
+          <div class="color-value">Variante clara</div>
+        </div>
+
+        <!-- Emerald -->
+        <div class="color-swatch" style="background-color: var(--accent-emerald); color: white;">
+          <div>
+            <div class="color-label">Accent Emerald</div>
+            <div class="color-value">#059669</div>
+          </div>
+          <div class="color-value">Green Luxury</div>
+        </div>
+
+        <!-- Amber -->
+        <div class="color-swatch" style="background-color: var(--accent-amber); color: white;">
+          <div>
+            <div class="color-label">Accent Amber</div>
+            <div class="color-value">#b45309</div>
+          </div>
+          <div class="color-value">Warm Accent</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================
+         LUXURY (Gold & Silver)
+         ======================== -->
+    <section id="luxury" class="mb-16">
+      <h2 class="text-3xl font-bold text-charcoal-900 mb-8">3. Luxury Accents (Gold & Silver)</h2>
+      <p class="text-charcoal-600 mb-8">Para detalles premium y lujo</p>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <!-- Gold Light -->
+        <div class="color-swatch" style="background-color: var(--gold-light); color: var(--charcoal-900);">
+          <div>
+            <div class="color-label">Gold Light</div>
+            <div class="color-value">#fef3c7</div>
+          </div>
+          <div class="color-value">Pale Gold</div>
+        </div>
+
+        <!-- Gold Base -->
+        <div class="color-swatch" style="background-color: var(--gold-base); color: var(--charcoal-900);">
+          <div>
+            <div class="color-label">Gold Base</div>
+            <div class="color-value">#fbbf24</div>
+          </div>
+          <div class="color-value">Premium Gold</div>
+        </div>
+
+        <!-- Gold Dark -->
+        <div class="color-swatch" style="background-color: var(--gold-dark); color: white;">
+          <div>
+            <div class="color-label">Gold Dark</div>
+            <div class="color-value">#d97706</div>
+          </div>
+          <div class="color-value">Gold Accent</div>
+        </div>
+
+        <!-- Silver Light -->
+        <div class="color-swatch" style="background-color: var(--silver-light); color: var(--charcoal-900);">
+          <div>
+            <div class="color-label">Silver Light</div>
+            <div class="color-value">#f8f8f8</div>
+          </div>
+          <div class="color-value">Light Silver</div>
+        </div>
+
+        <!-- Silver Base -->
+        <div class="color-swatch" style="background-color: var(--silver-base); color: var(--charcoal-900);">
+          <div>
+            <div class="color-label">Silver Base</div>
+            <div class="color-value">#e5e7eb</div>
+          </div>
+          <div class="color-value">Silver Medium</div>
+        </div>
+
+        <!-- Silver Dark -->
+        <div class="color-swatch" style="background-color: var(--silver-dark); color: white;">
+          <div>
+            <div class="color-label">Silver Dark</div>
+            <div class="color-value">#9ca3af</div>
+          </div>
+          <div class="color-value">Silver Accent</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================
+         COMPONENTES CON ESTADOS
+         ======================== -->
+    <section id="componentes" class="mb-16">
+      <h2 class="text-3xl font-bold text-charcoal-900 mb-8">4. Componentes con Hover States</h2>
+      <p class="text-charcoal-600 mb-8">Prueba hover, click y keyboard (tab)</p>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Primary Button -->
+        <div>
+          <h3 class="font-bold text-charcoal-900 mb-4">Primary Button</h3>
+          <button class="btn-demo btn-primary-demo">
+            Comenzar Demo
+          </button>
+          <p class="text-sm text-charcoal-600 mt-4">Hover: escala + sombra glow<br>Click: se ve presionado</p>
+        </div>
+
+        <!-- Secondary Button -->
+        <div>
+          <h3 class="font-bold text-charcoal-900 mb-4">Secondary Button</h3>
+          <button class="btn-demo btn-secondary-demo">
+            Ver Más Opciones
+          </button>
+          <p class="text-sm text-charcoal-600 mt-4">Hover: border + text pink<br>Click: presionado</p>
+        </div>
+
+        <!-- Accent Button -->
+        <div>
+          <h3 class="font-bold text-charcoal-900 mb-4">Accent Button</h3>
+          <button class="btn-demo btn-accent-demo">
+            Solicitar Demo
+          </button>
+          <p class="text-sm text-charcoal-600 mt-4">Hover: color más claro<br>Click: presionado</p>
+        </div>
+      </div>
+
+      <!-- Badges with Glow -->
+      <div class="mt-12">
+        <h3 class="font-bold text-charcoal-900 mb-4">Badges con Glow</h3>
+        <div class="flex gap-4 flex-wrap">
+          <span class="inline-block px-3 py-1 rounded-full bg-accent-pink text-white text-sm font-semibold badge-glow">
+            Premium ✨
+          </span>
+          <span class="inline-block px-3 py-1 rounded-full bg-accent-cyan text-white text-sm font-semibold badge-glow">
+            Tech Innovation
+          </span>
+          <span class="inline-block px-3 py-1 rounded-full bg-gold-base text-charcoal-900 text-sm font-semibold">
+            Luxury VIP
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================
+         GRADIENTES PREMIUM
+         ======================== -->
+    <section id="gradientes" class="mb-16">
+      <h2 class="text-3xl font-bold text-charcoal-900 mb-8">5. Gradientes Premium</h2>
+      <p class="text-charcoal-600 mb-8">Para sections y CTAs destacadas</p>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Dark Gradient -->
+        <div class="section-hero p-12 rounded-lg shadow-elevation-3">
+          <h3 class="text-2xl font-bold mb-4">Gradient Dark</h3>
+          <p class="mb-6">Perfecto para hero sections y backgrounds principales</p>
+          <button class="btn-demo" style="background-color: var(--accent-pink); color: white;">
+            Explorar
+          </button>
+        </div>
+
+        <!-- Accent Gradient -->
+        <div class="section-accent p-12 rounded-lg shadow-elevation-3">
+          <h3 class="text-2xl font-bold mb-4">Gradient Accent</h3>
+          <p class="mb-6">Pink → Cyan: para CTAs y highlights principales</p>
+          <button class="btn-demo" style="background-color: white; color: var(--charcoal-900);">
+            Activar
+          </button>
+        </div>
+
+        <!-- Gold Gradient -->
+        <div class="p-12 rounded-lg shadow-elevation-3" style="background: linear-gradient(135deg, var(--gold-base) 0%, var(--gold-dark) 100%);">
+          <h3 class="text-2xl font-bold mb-4 text-charcoal-900">Gradient Gold</h3>
+          <p class="mb-6 text-charcoal-900">Luxury gold: para premios y VIP</p>
+          <button class="btn-demo" style="background-color: var(--charcoal-900); color: white;">
+            VIP Access
+          </button>
+        </div>
+
+        <!-- Subtle Gradient -->
+        <div class="p-12 rounded-lg shadow-elevation-3" style="background: linear-gradient(135deg, var(--charcoal-50) 0%, var(--charcoal-150) 100%);">
+          <h3 class="text-2xl font-bold mb-4 text-charcoal-900">Gradient Subtle</h3>
+          <p class="mb-6 text-charcoal-900">Sutil: para backgrounds secundarios</p>
+          <button class="btn-demo btn-secondary-demo">
+            Continuar
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================
+         RESUMEN
+         ======================== -->
+    <section class="mb-16 bg-charcoal-50 p-12 rounded-lg">
+      <h2 class="text-3xl font-bold text-charcoal-900 mb-8">Resumen de Paleta</h2>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <h3 class="font-bold text-charcoal-900 mb-4">Colores</h3>
+          <ul class="text-charcoal-600 space-y-2">
+            <li>✓ 12 Grises (charcoal-50 a 950)</li>
+            <li>✓ 6 Accents (pink, cyan, emerald, amber)</li>
+            <li>✓ 6 Luxury (gold, silver variaciones)</li>
+            <li>✓ 4 Gradientes premium</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-charcoal-900 mb-4">Estados</h3>
+          <ul class="text-charcoal-600 space-y-2">
+            <li>✓ Hover: shadow + scale + color</li>
+            <li>✓ Active: scale-95 presionado</li>
+            <li>✓ Focus: ring accesibilidad</li>
+            <li>✓ Disabled: opacity 50%</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-8 p-6 bg-charcoal-100 rounded border-l-4 border-accent-pink">
+        <p class="text-charcoal-900 font-semibold">
+          ✓ Todos los hover states son CLAROS y VISIBLES
+        </p>
+        <p class="text-charcoal-600 text-sm mt-2">
+          Combinación de: sombra glow, escala (105% → 95%) y cambio de color
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-charcoal-900 text-charcoal-50 py-12 mt-16">
+    <div class="max-w-6xl mx-auto px-8 text-center">
+      <p class="mb-2">ArtiMindArt - Paleta Premium Config</p>
+      <p class="text-charcoal-400 text-sm">
+        Listo para copiar a tailwind.config.ts | <a href="#grises" class="hover:text-accent-pink">Ver arriba</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

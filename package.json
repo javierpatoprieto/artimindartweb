@@ -1,0 +1,19 @@
+{
+  "name": "artimindartweb",
+  "version": "1.0.0",
+  "description": "ArtiMindArt — AI creative studio landing & admin",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static build'",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "resend": "^2.0.0",
+    "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}

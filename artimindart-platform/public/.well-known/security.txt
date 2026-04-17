@@ -1,0 +1,5 @@
+Contact: mailto:security@artimindart.com
+Contact: https://artimindart.com/security
+Expires: 2027-04-09T00:00:00Z
+Preferred-Languages: en
+Canonical: https://artimindart.com/.well-known/security.txt
