@@ -1,35 +1,31 @@
 export default async function handler(req, res) {
   try {
-    const { createClient } = await import('@supabase/supabase-js');
+    const url = process.env.SUPABASE_URL;
+    const roleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    const client = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
+    // Test basic fetch to Supabase
+    const testUrl = `${url}/rest/v1/admin_users?select=username`;
+    const response = await fetch(testUrl, {
+      method: 'GET',
+      headers: {
+        'apikey': roleKey,
+        'Authorization': `Bearer ${roleKey}`,
+      }
+    });
 
-    const { data, error } = await client
-      .from('admin_users')
-      .select('username')
-      .limit(5);
-
-    if (error) {
-      return res.json({
-        success: false,
-        error: error.message,
-        code: error.code,
-      });
-    }
+    const data = await response.json();
 
     return res.json({
-      success: true,
-      count: data?.length || 0,
-      usernames: data?.map(u => u.username) || []
+      success: response.ok,
+      status: response.status,
+      statusText: response.statusText,
+      data: data
     });
   } catch (err) {
     return res.json({
       success: false,
       error: err.message,
-      stack: err.stack?.split('\n').slice(0, 3)
+      type: err.constructor.name
     });
   }
 }
