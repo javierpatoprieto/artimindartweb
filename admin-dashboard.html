@@ -1,0 +1,1662 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ArtiMind · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap">
+<style>
+  /* ===== TOKENS ===== */
+  :root{
+    --bg:#07070a;
+    --bg-2:#0d0d12;
+    --bg-3:#15151c;
+    --bg-4:#1d1d26;
+    --ink:#f2f1ec;
+    --ink-dim:#a8a6a0;
+    --ink-faint:#5a5952;
+    --line:rgba(255,255,255,0.07);
+    --line-strong:rgba(255,255,255,0.14);
+    --neon:#ff2e2e;
+    --neon-soft:rgba(255,46,46,0.35);
+    --neon-bg:rgba(255,46,46,0.08);
+    --ok:#4ade80;
+    --warn:#fbbf24;
+    --danger:#ef4444;
+    --display:'Space Grotesk','Helvetica Neue',Helvetica,Arial,sans-serif;
+    --sans:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --ease:cubic-bezier(.2,.7,.2,1);
+  }
+  html[data-theme="light"]{
+    --bg:#f5f3ec;--bg-2:#ecead f;--bg-2:#ecead f;--bg-2:#edeae0;--bg-3:#e3e0d4;--bg-4:#d6d2c3;
+    --ink:#0a0a0a;--ink-dim:#3b3a33;--ink-faint:#8f8c81;
+    --line:rgba(0,0,0,0.1);--line-strong:rgba(0,0,0,0.2);
+    --neon:#d90000;--neon-soft:rgba(217,0,0,0.28);--neon-bg:rgba(217,0,0,0.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:var(--sans);font-size:14px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit}
+  ::selection{background:var(--neon);color:#fff}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--bg-3);border-radius:10px;border:2px solid var(--bg)}
+  ::-webkit-scrollbar-thumb:hover{background:var(--bg-4)}
+
+  /* ===== SHELL ===== */
+  .shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+  /* ===== SIDEBAR ===== */
+  .side{
+    border-right:1px solid var(--line);
+    padding:20px 14px;
+    display:flex;flex-direction:column;gap:18px;
+    position:sticky;top:0;height:100vh;
+    background:var(--bg);
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;padding:4px 8px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .brand .logo-dot{
+    width:28px;height:28px;border-radius:6px;background:var(--neon);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--display);font-weight:700;color:#fff;font-size:14px;
+    box-shadow:0 0 20px -4px var(--neon);
+    position:relative;
+  }
+  .brand .logo-dot::after{content:"";position:absolute;inset:3px;border:1px solid rgba(255,255,255,.3);border-radius:4px;pointer-events:none}
+  .brand .txt{display:flex;flex-direction:column;line-height:1}
+  .brand .n{font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:-.01em}
+  .brand .t{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--ink-faint);text-transform:uppercase;margin-top:2px}
+
+  .side h6{
+    font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ink-faint);margin:14px 10px 6px;font-weight:500;
+  }
+  .nav{display:flex;flex-direction:column;gap:1px}
+  .nav a{
+    padding:8px 10px;border-radius:6px;
+    font-size:13px;font-weight:500;color:var(--ink-dim);
+    display:flex;align-items:center;gap:10px;
+    transition:all .15s var(--ease);cursor:pointer;
+  }
+  .nav a:hover{background:var(--bg-2);color:var(--ink)}
+  .nav a.active{background:var(--bg-3);color:var(--ink)}
+  .nav a.active::before{content:"";width:3px;height:14px;background:var(--neon);border-radius:2px;margin-right:-3px;margin-left:-10px}
+  .nav .ico{width:16px;height:16px;flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink-faint)}
+  .nav a.active .ico, .nav a:hover .ico{color:var(--ink)}
+  .nav .count{
+    margin-left:auto;font-family:var(--mono);font-size:10px;
+    padding:2px 6px;border-radius:4px;background:var(--bg-3);color:var(--ink-faint);
+  }
+  .nav a.active .count{background:var(--neon);color:#fff}
+
+  .side .me{
+    margin-top:auto;padding:10px;border-top:1px solid var(--line);
+    display:flex;align-items:center;gap:10px;cursor:pointer;border-radius:6px;
+  }
+  .side .me:hover{background:var(--bg-2)}
+  .side .me .av{
+    width:32px;height:32px;border-radius:50%;
+    background:linear-gradient(135deg,#ff2e2e,#8b0000);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--display);font-weight:600;font-size:12px;color:#fff;
+    flex:none;
+  }
+  .side .me .info{flex:1;min-width:0}
+  .side .me .n{font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .side .me .r{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--ink-faint);text-transform:uppercase}
+
+  /* ===== MAIN ===== */
+  main{overflow-x:hidden;position:relative}
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 28px;border-bottom:1px solid var(--line);
+    position:sticky;top:0;background:rgba(7,7,10,.85);backdrop-filter:blur(12px);z-index:20;
+    gap:16px;
+  }
+  html[data-theme="light"] .topbar{background:rgba(245,243,236,.85)}
+  .crumbs{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);display:flex;align-items:center;gap:8px}
+  .crumbs b{color:var(--ink);font-weight:500}
+  .crumbs .sep{opacity:.4}
+
+  .tools{display:flex;gap:8px;align-items:center}
+  .search{
+    font-family:var(--sans);font-size:13px;padding:7px 12px 7px 32px;
+    border:1px solid var(--line-strong);background:var(--bg-2);color:var(--ink);
+    border-radius:6px;min-width:280px;outline:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='m21 21-4.3-4.3'/></svg>");
+    background-repeat:no-repeat;background-position:10px center;
+  }
+  .search:focus{border-color:var(--neon)}
+  .kbd{
+    font-family:var(--mono);font-size:9px;padding:2px 5px;border-radius:3px;
+    background:var(--bg-3);border:1px solid var(--line);color:var(--ink-faint);
+    margin-left:6px;
+  }
+  .btn{
+    font-family:var(--sans);font-size:12px;font-weight:500;
+    padding:7px 12px;border-radius:6px;border:1px solid var(--line-strong);
+    background:var(--bg-2);color:var(--ink);cursor:pointer;
+    transition:all .15s var(--ease);display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn:hover{border-color:var(--line-strong);background:var(--bg-3)}
+  .btn.primary{background:var(--neon);color:#fff;border-color:var(--neon)}
+  .btn.primary:hover{background:#ff4848;border-color:#ff4848}
+  .btn.ghost{background:transparent;border-color:transparent;color:var(--ink-dim)}
+  .btn.ghost:hover{background:var(--bg-2);color:var(--ink)}
+  .btn .chev{opacity:.5;font-size:10px}
+
+  .icobtn{
+    width:32px;height:32px;border-radius:6px;border:1px solid transparent;
+    background:transparent;color:var(--ink-dim);display:inline-flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all .15s;
+  }
+  .icobtn:hover{background:var(--bg-2);color:var(--ink);border-color:var(--line)}
+  .icobtn.has-dot{position:relative}
+  .icobtn.has-dot::after{content:"";position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--neon);border:2px solid var(--bg)}
+
+  /* ===== VIEWS ===== */
+  .view{display:none;padding:28px 28px 80px}
+  .view.active{display:block}
+
+  .page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;gap:20px;flex-wrap:wrap}
+  .page-head h1{
+    font-family:var(--display);font-weight:600;font-size:28px;letter-spacing:-.02em;
+    margin:0 0 4px;line-height:1.1;
+  }
+  .page-head .sub{color:var(--ink-dim);font-size:14px;margin:0}
+  .page-head .actions{display:flex;gap:8px}
+
+  /* ===== KPI CARDS ===== */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+  .kpi{
+    padding:18px;border:1px solid var(--line);background:var(--bg-2);
+    border-radius:8px;position:relative;overflow:hidden;
+    transition:border-color .2s;
+  }
+  .kpi:hover{border-color:var(--line-strong)}
+  .kpi .l{
+    font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-faint);display:flex;align-items:center;gap:6px;
+  }
+  .kpi .n{
+    font-family:var(--display);font-weight:600;font-size:34px;line-height:1;
+    margin:14px 0 8px;letter-spacing:-.02em;
+  }
+  .kpi .d{font-family:var(--mono);font-size:11px;color:var(--ok);display:flex;align-items:center;gap:4px}
+  .kpi .d.down{color:var(--danger)}
+  .kpi .d .tag{color:var(--ink-faint)}
+  .kpi .spark{position:absolute;right:14px;bottom:12px;width:80px;height:28px;opacity:.6}
+
+  /* ===== PANELS (2-col layout) ===== */
+  .grid-2{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px}
+  .panel{
+    border:1px solid var(--line);background:var(--bg-2);
+    border-radius:8px;overflow:hidden;
+  }
+  .panel-head{
+    padding:14px 18px;border-bottom:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+  }
+  .panel-head h3{font-family:var(--display);font-weight:600;font-size:15px;margin:0;letter-spacing:-.01em}
+  .panel-head .hint{font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase}
+  .panel-head .lnk{font-size:12px;color:var(--ink-dim);display:flex;align-items:center;gap:4px;cursor:pointer}
+  .panel-head .lnk:hover{color:var(--neon)}
+  .panel-body{padding:18px}
+  .panel-body.flush{padding:0}
+
+  /* ===== TABLE ===== */
+  .tbl{width:100%;border-collapse:collapse;font-size:13px}
+  .tbl thead th{
+    text-align:left;padding:10px 18px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-faint);border-bottom:1px solid var(--line);background:var(--bg-3);font-weight:500;
+  }
+  .tbl tbody td{padding:13px 18px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .tbl tbody tr:hover{background:var(--bg-3);cursor:pointer}
+  .tbl tbody tr:last-child td{border-bottom:none}
+  .tbl .num{font-family:var(--mono);color:var(--ink-dim)}
+
+  /* ===== PILLS / STATUS ===== */
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    padding:3px 8px;border-radius:4px;
+    background:var(--bg-3);color:var(--ink-dim);
+    border:1px solid var(--line);
+  }
+  .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  .pill.new{color:var(--neon);background:var(--neon-bg);border-color:var(--neon-soft)}
+  .pill.live,.pill.paid,.pill.won{color:var(--ok);background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3)}
+  .pill.draft,.pill.pending{color:var(--warn);background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.3)}
+  .pill.lost,.pill.overdue{color:var(--danger);background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3)}
+  .pill.no-dot::before{display:none}
+
+  /* ===== AVATARS ===== */
+  .av{
+    width:32px;height:32px;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-family:var(--display);font-weight:600;font-size:12px;color:#fff;
+    flex:none;
+  }
+  .av-sm{width:24px;height:24px;font-size:10px}
+  .av-lg{width:44px;height:44px;font-size:15px}
+  .cell{display:flex;align-items:center;gap:12px}
+  .cell .n{font-weight:500;line-height:1.3}
+  .cell .e{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-top:2px}
+
+  /* ===== LEAD INBOX ===== */
+  .inbox{display:grid;grid-template-columns:360px 1fr;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--bg-2);height:calc(100vh - 200px);min-height:560px}
+  .inbox .list{border-right:1px solid var(--line);overflow-y:auto;background:var(--bg-2)}
+  .inbox .list-head{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg-2);z-index:2}
+  .inbox .list-head .filters{display:flex;gap:6px}
+  .chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:4px;cursor:pointer;color:var(--ink-dim);border:1px solid var(--line)}
+  .chip.active{background:var(--bg-3);color:var(--ink);border-color:var(--line-strong)}
+  .lead-item{padding:14px 16px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;gap:12px;transition:background .1s}
+  .lead-item:hover{background:var(--bg-3)}
+  .lead-item.selected{background:var(--bg-3);border-left:3px solid var(--neon);padding-left:13px}
+  .lead-item.unread .n{font-weight:600}
+  .lead-item.unread::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--neon);align-self:center;flex:none;margin-left:auto}
+  .lead-item .body{flex:1;min-width:0}
+  .lead-item .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+  .lead-item .n{font-size:13px}
+  .lead-item .t{font-family:var(--mono);font-size:10px;color:var(--ink-faint)}
+  .lead-item .subj{font-size:12px;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lead-item .tags{display:flex;gap:4px;margin-top:6px}
+
+  .inbox .detail{overflow-y:auto;padding:0}
+  .lead-detail-head{padding:24px 28px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+  .lead-detail-head h2{font-family:var(--display);font-weight:600;margin:0 0 6px;font-size:20px;letter-spacing:-.01em}
+  .lead-detail-head .meta{display:flex;gap:16px;margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
+  .lead-detail-head .meta b{color:var(--ink);font-weight:500}
+  .lead-body{padding:28px;font-size:14px;line-height:1.65;color:var(--ink-dim)}
+  .lead-body p{margin:0 0 1em}
+  .lead-footer{padding:20px 28px;border-top:1px solid var(--line);display:flex;gap:8px;position:sticky;bottom:0;background:var(--bg-2)}
+
+  /* ===== KANBAN ===== */
+  .kanban{display:grid;grid-template-columns:repeat(4,minmax(260px,1fr));gap:14px;overflow-x:auto;padding-bottom:10px}
+  .col{background:var(--bg-2);border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;min-height:400px}
+  .col-head{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .col-head .t{font-family:var(--display);font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px}
+  .col-head .t::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink-faint)}
+  .col-head .t.s1::before{background:var(--ink-faint)}
+  .col-head .t.s2::before{background:var(--warn)}
+  .col-head .t.s3::before{background:var(--neon)}
+  .col-head .t.s4::before{background:var(--ok)}
+  .col-head .c{font-family:var(--mono);font-size:10px;color:var(--ink-faint);background:var(--bg-3);padding:2px 6px;border-radius:4px}
+  .col-body{padding:10px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .task{
+    background:var(--bg-3);border:1px solid var(--line);border-radius:6px;padding:12px;cursor:grab;
+    transition:all .15s;
+  }
+  .task:hover{border-color:var(--line-strong);transform:translateY(-1px)}
+  .task .thumb{width:100%;aspect-ratio:16/9;border-radius:4px;margin-bottom:10px;background:var(--bg-4);background-size:cover;background-position:center;position:relative;overflow:hidden}
+  .task .thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.5));pointer-events:none}
+  .task .title{font-family:var(--display);font-weight:600;font-size:13px;margin-bottom:4px;line-height:1.3}
+  .task .client{font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+  .task .foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+  .task .avs{display:flex}
+  .task .avs .av{width:22px;height:22px;font-size:9px;margin-left:-4px;border:2px solid var(--bg-3)}
+  .task .avs .av:first-child{margin-left:0}
+  .task .due{font-family:var(--mono);font-size:10px;color:var(--ink-dim);display:flex;align-items:center;gap:4px}
+  .task .due.warn{color:var(--warn)}
+  .task .progress{height:3px;border-radius:2px;background:var(--bg-4);overflow:hidden;margin-top:8px}
+  .task .progress .bar{height:100%;background:var(--neon)}
+
+  /* ===== CMS EDITOR (Content section) ===== */
+  .cms-layout{display:grid;grid-template-columns:240px 1fr 320px;gap:14px;height:calc(100vh - 200px);min-height:600px}
+  .cms-tree{border:1px solid var(--line);background:var(--bg-2);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+  .cms-tree-head{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .cms-tree-head .t{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+  .cms-tree-body{padding:6px;overflow-y:auto;flex:1}
+  .tree-item{padding:7px 10px;border-radius:5px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--ink-dim)}
+  .tree-item:hover{background:var(--bg-3);color:var(--ink)}
+  .tree-item.active{background:var(--neon-bg);color:var(--ink);border-left:2px solid var(--neon);padding-left:8px}
+  .tree-item .k{font-family:var(--mono);font-size:9px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;margin-left:auto}
+  .tree-group{padding:10px 10px 4px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+
+  .cms-canvas{
+    border:1px solid var(--line);background:var(--bg-2);border-radius:8px;
+    overflow:hidden;display:flex;flex-direction:column;
+  }
+  .cms-canvas-head{
+    padding:10px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:var(--bg-3);
+  }
+  .cms-canvas-head .viewport{display:flex;gap:4px;background:var(--bg-2);padding:2px;border-radius:5px}
+  .cms-canvas-head .viewport button{padding:4px 10px;border:none;background:transparent;color:var(--ink-faint);border-radius:4px;font-size:11px;cursor:pointer;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase}
+  .cms-canvas-head .viewport button.active{background:var(--bg-4);color:var(--ink)}
+  .cms-canvas-body{flex:1;overflow-y:auto;padding:24px;background:
+    radial-gradient(circle at 20% 0%, rgba(255,46,46,.05), transparent 40%),
+    var(--bg-2);
+  }
+  .cms-canvas-body.preview-mobile{display:flex;justify-content:center}
+  .cms-canvas-body.preview-mobile .live-hero{max-width:390px;border-radius:18px;border:1px solid var(--line-strong)}
+
+  .live-hero{
+    padding:32px;border:1px dashed var(--line);border-radius:10px;background:var(--bg);
+    position:relative;transition:border-color .15s;
+  }
+  .live-hero:hover{border-color:var(--neon-soft)}
+  .live-hero .edit-tag{
+    position:absolute;top:-10px;left:12px;font-family:var(--mono);font-size:9px;
+    padding:2px 6px;background:var(--bg-2);color:var(--ink-faint);letter-spacing:.14em;text-transform:uppercase;
+    border:1px solid var(--line);border-radius:3px;
+  }
+  .live-hero:hover .edit-tag{color:var(--neon);border-color:var(--neon-soft)}
+  .live-hero .mini-label{font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:14px}
+  .live-hero h1{
+    font-family:var(--display);font-weight:700;font-size:clamp(40px,6vw,88px);line-height:.96;
+    letter-spacing:-.035em;margin:0 0 20px;
+  }
+  .live-hero h1 .outline{-webkit-text-stroke:1.3px var(--ink);color:transparent}
+  .live-hero h1 .glitch{color:var(--neon)}
+  .live-hero .tagline{color:var(--ink-dim);font-size:15px;max-width:500px}
+
+  .inspector{border:1px solid var(--line);background:var(--bg-2);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+  .inspector-head{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;gap:4px;background:var(--bg-3)}
+  .inspector-head button{
+    padding:5px 10px;border:none;background:transparent;color:var(--ink-faint);
+    border-radius:4px;font-size:11px;cursor:pointer;
+    font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  }
+  .inspector-head button.active{background:var(--bg-2);color:var(--ink)}
+  .inspector-body{padding:16px;overflow-y:auto;flex:1}
+  .field{margin-bottom:16px}
+  .field label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
+  .field label .hint{color:var(--ink-faint);opacity:.6;text-transform:none;letter-spacing:0;font-size:10px}
+  .field input, .field textarea, .field select{
+    width:100%;padding:8px 10px;font-family:var(--sans);font-size:13px;
+    background:var(--bg);border:1px solid var(--line-strong);color:var(--ink);
+    border-radius:5px;outline:none;transition:border-color .15s;
+  }
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--neon)}
+  .field textarea{resize:vertical;min-height:80px;font-family:var(--sans);line-height:1.5}
+  .field .counter{font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-top:4px;text-align:right}
+  .field.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .seo-preview{
+    padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);margin-top:6px;
+  }
+  .seo-preview .url{font-family:var(--mono);font-size:11px;color:#4a90e2;margin-bottom:4px}
+  .seo-preview .title{font-size:15px;color:#8ab4f8;margin-bottom:4px;font-weight:500;line-height:1.3}
+  .seo-preview .desc{font-size:12px;color:var(--ink-dim);line-height:1.4}
+
+  /* color swatches */
+  .swatches{display:flex;gap:6px;margin-top:6px}
+  .swatch{width:24px;height:24px;border-radius:5px;border:2px solid var(--bg-2);cursor:pointer;outline:1px solid var(--line-strong)}
+  .swatch.active{outline:2px solid var(--ink)}
+
+  /* ===== MEDIA LIBRARY ===== */
+  .media-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
+  .media-toolbar .left{display:flex;gap:6px;align-items:center}
+  .seg{display:flex;gap:2px;background:var(--bg-2);border:1px solid var(--line);padding:2px;border-radius:6px}
+  .seg button{padding:5px 12px;border:none;background:transparent;color:var(--ink-dim);border-radius:4px;font-size:11px;cursor:pointer;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase}
+  .seg button.active{background:var(--bg-3);color:var(--ink)}
+  .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .asset{
+    border:1px solid var(--line);background:var(--bg-2);border-radius:8px;overflow:hidden;
+    cursor:pointer;transition:all .15s;
+  }
+  .asset:hover{border-color:var(--neon-soft);transform:translateY(-2px)}
+  .asset .thumb{aspect-ratio:16/10;background:var(--bg-4);background-size:cover;background-position:center;position:relative;overflow:hidden}
+  .asset .thumb::before{content:"▶";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-size:28px;opacity:0;transition:opacity .2s}
+  .asset.video .thumb::before{opacity:1;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+  .asset .thumb .dur{position:absolute;bottom:6px;right:6px;font-family:var(--mono);font-size:10px;background:rgba(0,0,0,.6);padding:2px 5px;border-radius:3px;color:#fff}
+  .asset .info{padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .asset .info .n{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .asset .info .m{font-family:var(--mono);font-size:10px;color:var(--ink-faint);flex:none}
+  .dropzone{
+    grid-column:1/-1;border:1.5px dashed var(--line-strong);border-radius:10px;
+    padding:36px 20px;text-align:center;color:var(--ink-dim);cursor:pointer;
+    transition:all .2s;
+  }
+  .dropzone:hover{border-color:var(--neon-soft);background:var(--neon-bg)}
+  .dropzone .big{font-family:var(--display);font-weight:600;font-size:16px;color:var(--ink);margin-bottom:4px}
+  .dropzone .sm{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.1em}
+
+  /* ===== ANALYTICS ===== */
+  .chart{width:100%;height:220px}
+  .legend{display:flex;gap:16px;margin-top:10px}
+  .legend .item{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
+  .legend .sw{width:10px;height:10px;border-radius:2px}
+
+  .src-list{display:flex;flex-direction:column}
+  .src-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .src-row:last-child{border-bottom:none}
+  .src-row .n{font-size:13px;font-weight:500;flex:1}
+  .src-row .bar-track{flex:2;height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden}
+  .src-row .bar{height:100%;background:var(--neon);border-radius:3px}
+  .src-row .val{font-family:var(--mono);font-size:11px;color:var(--ink-dim);width:52px;text-align:right}
+
+  /* ===== BILLING ===== */
+  .invoice-head{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line)}
+  .amount{font-family:var(--display);font-weight:600;font-size:16px}
+  .mrr-big{font-family:var(--display);font-size:48px;font-weight:700;letter-spacing:-.03em;line-height:1}
+  .mrr-big .cur{font-size:24px;color:var(--ink-faint);vertical-align:top;margin-right:4px}
+
+  /* ===== SETTINGS ===== */
+  .settings-grid{display:grid;grid-template-columns:220px 1fr;gap:24px}
+  .set-nav{display:flex;flex-direction:column;gap:2px;position:sticky;top:80px;align-self:start}
+  .set-nav a{padding:8px 12px;border-radius:5px;font-size:13px;color:var(--ink-dim);cursor:pointer}
+  .set-nav a:hover{background:var(--bg-2);color:var(--ink)}
+  .set-nav a.active{background:var(--bg-3);color:var(--ink);font-weight:500}
+  .set-section{margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid var(--line)}
+  .set-section:last-child{border:none}
+  .set-section h3{font-family:var(--display);font-weight:600;font-size:17px;margin:0 0 4px}
+  .set-section .desc{color:var(--ink-dim);font-size:13px;margin-bottom:18px}
+
+  /* ===== TOGGLES ===== */
+  .toggle{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+  .toggle input{display:none}
+  .toggle .track{width:34px;height:20px;background:var(--bg-3);border-radius:999px;border:1px solid var(--line-strong);position:relative;transition:all .2s}
+  .toggle .track::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--ink);transition:transform .2s}
+  .toggle input:checked + .track{background:var(--neon);border-color:var(--neon)}
+  .toggle input:checked + .track::after{transform:translateX(14px);background:#fff}
+
+  /* ===== UTILS ===== */
+  .hide-md{display:inherit}
+  @media(max-width:1180px){
+    .hide-md{display:none}
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid-2, .grid-3{grid-template-columns:1fr}
+    .cms-layout{grid-template-columns:1fr;height:auto}
+    .inbox{grid-template-columns:1fr;height:auto}
+  }
+  @media(max-width:720px){
+    .shell{grid-template-columns:1fr}
+    .side{display:none}
+  }
+
+  /* breadcrumb "/" separator */
+  .sep{color:var(--ink-faint);opacity:.6}
+
+  /* subtle grain overlay */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    opacity:.03;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .shell{position:relative;z-index:1}
+
+  /* focus styling */
+  *:focus-visible{outline:2px solid var(--neon);outline-offset:2px;border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ================== SIDEBAR ================== -->
+  <aside class="side">
+    <div class="brand">
+      <div class="logo-dot">A</div>
+      <div class="txt">
+        <div class="n">ArtiMind</div>
+        <div class="t">admin · v0.9</div>
+      </div>
+    </div>
+
+    <div>
+      <h6>Workspace</h6>
+      <nav class="nav" id="mainNav">
+        <a data-view="dashboard" class="active">
+          <span class="ico">◨</span> Dashboard
+        </a>
+        <a data-view="content">
+          <span class="ico">✎</span> Content <span class="count">14</span>
+        </a>
+        <a data-view="leads">
+          <span class="ico">✉</span> Leads <span class="count">7</span>
+        </a>
+        <a data-view="projects">
+          <span class="ico">▦</span> Projects <span class="count">11</span>
+        </a>
+        <a data-view="clients">
+          <span class="ico">◉</span> Clients
+        </a>
+        <a data-view="media">
+          <span class="ico">▶</span> Media
+        </a>
+        <a data-view="billing">
+          <span class="ico">€</span> Billing
+        </a>
+        <a data-view="analytics">
+          <span class="ico">◴</span> Analytics
+        </a>
+      </nav>
+    </div>
+
+    <div>
+      <h6>Account</h6>
+      <nav class="nav">
+        <a data-view="settings">
+          <span class="ico">⚙</span> Settings
+        </a>
+        <a href="index.html" target="_blank">
+          <span class="ico">↗</span> View site
+        </a>
+      </nav>
+    </div>
+
+    <div class="me" title="Javier Pato">
+      <div class="av">JP</div>
+      <div class="info">
+        <div class="n">Javier Pato</div>
+        <div class="r">owner · online</div>
+      </div>
+      <span style="color:var(--ink-faint);font-size:12px">⋮</span>
+    </div>
+  </aside>
+
+  <!-- ================== MAIN ================== -->
+  <main>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="crumbs">
+        <b>ArtiMind</b> <span class="sep">/</span> <span id="crumbCur">Dashboard</span>
+      </div>
+      <div class="tools">
+        <input class="search hide-md" placeholder="Search projects, leads, assets…"/>
+        <button class="icobtn has-dot" title="Notifications">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        </button>
+        <button class="icobtn" id="themeBtn" title="Toggle theme">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="btn primary">
+          <span style="font-size:14px;line-height:1">+</span> New
+        </button>
+      </div>
+    </div>
+
+    <!-- =============== DASHBOARD =============== -->
+    <section class="view active" id="view-dashboard">
+      <div class="page-head">
+        <div>
+          <h1>Good afternoon, Javier.</h1>
+          <p class="sub">Here's what moved today — <span style="color:var(--neon)">3 new leads</span>, 2 projects shipped, <span style="color:var(--ok)">+€8.2k</span> in revenue this week.</p>
+        </div>
+        <div class="actions">
+          <button class="btn"><span>⤓</span> Export</button>
+          <button class="btn">This month <span class="chev">▾</span></button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpis">
+        <div class="kpi">
+          <div class="l">New leads · this week</div>
+          <div class="n">14</div>
+          <div class="d">▲ 64% <span class="tag">vs last week</span></div>
+          <svg class="spark" viewBox="0 0 80 28" fill="none" stroke="var(--neon)" stroke-width="1.5">
+            <polyline points="0,20 10,18 20,22 30,15 40,16 50,10 60,12 70,6 80,4"/>
+          </svg>
+        </div>
+        <div class="kpi">
+          <div class="l">Active projects</div>
+          <div class="n">11</div>
+          <div class="d">▲ 2 <span class="tag">new this week</span></div>
+          <svg class="spark" viewBox="0 0 80 28" fill="none" stroke="var(--ink-dim)" stroke-width="1.5">
+            <polyline points="0,14 10,15 20,13 30,14 40,12 50,13 60,11 70,10 80,10"/>
+          </svg>
+        </div>
+        <div class="kpi">
+          <div class="l">MRR</div>
+          <div class="n">€24.8k</div>
+          <div class="d">▲ 12% <span class="tag">vs last month</span></div>
+          <svg class="spark" viewBox="0 0 80 28" fill="none" stroke="var(--ok)" stroke-width="1.5">
+            <polyline points="0,22 10,20 20,21 30,16 40,17 50,12 60,9 70,10 80,5"/>
+          </svg>
+        </div>
+        <div class="kpi">
+          <div class="l">Site visitors · 7d</div>
+          <div class="n">8,412</div>
+          <div class="d down">▼ 3% <span class="tag">vs last week</span></div>
+          <svg class="spark" viewBox="0 0 80 28" fill="none" stroke="var(--ink-dim)" stroke-width="1.5">
+            <polyline points="0,10 10,8 20,12 30,14 40,11 50,15 60,13 70,16 80,18"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Two columns: Leads + Revenue chart -->
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Recent leads</h3>
+            <span class="lnk" onclick="go('leads')">View all →</span>
+          </div>
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Contact</th><th>Company</th><th>Project</th><th>Budget</th><th>Status</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="recentLeads"></tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Revenue · last 12 weeks</h3>
+            <span class="hint">€</span>
+          </div>
+          <div class="panel-body">
+            <svg class="chart" viewBox="0 0 320 180" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="grad1" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="var(--neon)" stop-opacity=".3"/>
+                  <stop offset="100%" stop-color="var(--neon)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <g stroke="var(--line)" stroke-width="1">
+                <line x1="0" y1="45" x2="320" y2="45"/>
+                <line x1="0" y1="90" x2="320" y2="90"/>
+                <line x1="0" y1="135" x2="320" y2="135"/>
+              </g>
+              <path d="M0,140 L26,130 L52,135 L78,115 L104,118 L130,95 L156,100 L182,78 L208,82 L234,55 L260,60 L286,40 L320,30 L320,180 L0,180 Z" fill="url(#grad1)"/>
+              <polyline points="0,140 26,130 52,135 78,115 104,118 130,95 156,100 182,78 208,82 234,55 260,60 286,40 320,30"
+                        fill="none" stroke="var(--neon)" stroke-width="2"/>
+              <g fill="var(--neon)">
+                <circle cx="286" cy="40" r="3"/>
+                <circle cx="320" cy="30" r="3"/>
+              </g>
+            </svg>
+            <div class="legend">
+              <div class="item"><span class="sw" style="background:var(--neon)"></span> Revenue</div>
+              <div class="item" style="margin-left:auto">
+                <span style="color:var(--ok)">▲ 34%</span> <span style="color:var(--ink-faint)">QoQ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active projects + Upcoming deadlines -->
+      <div class="grid-2" style="margin-top:14px">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Active projects</h3>
+            <span class="lnk" onclick="go('projects')">Open kanban →</span>
+          </div>
+          <table class="tbl">
+            <thead>
+              <tr><th>Project</th><th>Client</th><th>Phase</th><th>Progress</th><th>Due</th></tr>
+            </thead>
+            <tbody id="activeProjects"></tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Site health</h3>
+            <span class="pill live no-dot"><span style="width:6px;height:6px;border-radius:50%;background:var(--ok);display:inline-block;margin-right:6px;box-shadow:0 0 8px var(--ok)"></span>All systems</span>
+          </div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span>Uptime · 30d</span><b style="font-family:var(--mono)">99.98%</b></div>
+                <div style="height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden"><div style="width:99.98%;height:100%;background:var(--ok)"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span>Lighthouse score</span><b style="font-family:var(--mono)">96 / 100</b></div>
+                <div style="height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden"><div style="width:96%;height:100%;background:var(--ok)"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span>Storage used</span><b style="font-family:var(--mono)">38.2 GB / 100</b></div>
+                <div style="height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden"><div style="width:38%;height:100%;background:var(--neon)"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span>Bandwidth · 30d</span><b style="font-family:var(--mono)">214 GB</b></div>
+                <div style="height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden"><div style="width:42%;height:100%;background:var(--warn)"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== CONTENT (CMS) =============== -->
+    <section class="view" id="view-content">
+      <div class="page-head">
+        <div>
+          <h1>Content</h1>
+          <p class="sub">Edit every section of the public site. Changes publish instantly.</p>
+        </div>
+        <div class="actions">
+          <button class="btn ghost">↺ History</button>
+          <button class="btn">Save draft</button>
+          <button class="btn primary">Publish changes</button>
+        </div>
+      </div>
+
+      <div class="cms-layout">
+        <!-- Tree -->
+        <div class="cms-tree">
+          <div class="cms-tree-head">
+            <span class="t">Pages</span>
+            <button class="icobtn" title="Add page">+</button>
+          </div>
+          <div class="cms-tree-body">
+            <div class="tree-group">Landing page</div>
+            <div class="tree-item active" data-block="hero"><span>◆</span> Hero <span class="k">/</span></div>
+            <div class="tree-item" data-block="services"><span>◇</span> Services</div>
+            <div class="tree-item" data-block="showreel"><span>▢</span> Showreel</div>
+            <div class="tree-item" data-block="about"><span>◈</span> About</div>
+            <div class="tree-item" data-block="process"><span>⬡</span> Process</div>
+            <div class="tree-item" data-block="pricing"><span>$</span> Pricing</div>
+            <div class="tree-item" data-block="testimonials"><span>❝</span> Testimonials</div>
+            <div class="tree-item" data-block="contact"><span>✉</span> Contact</div>
+            <div class="tree-item" data-block="partners"><span>⌬</span> Partners</div>
+
+            <div class="tree-group">Case studies</div>
+            <div class="tree-item"><span>▸</span> Project archive <span class="k">6</span></div>
+
+            <div class="tree-group">Global</div>
+            <div class="tree-item"><span>⚙</span> Navigation</div>
+            <div class="tree-item"><span>⚙</span> Footer</div>
+            <div class="tree-item"><span>⚙</span> SEO defaults</div>
+          </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="cms-canvas">
+          <div class="cms-canvas-head">
+            <div style="display:flex;gap:10px;align-items:center">
+              <span class="pill live no-dot"><span style="width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:6px;display:inline-block"></span>Published</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--ink-faint)">last edit 2m ago</span>
+            </div>
+            <div class="viewport" id="previewVP">
+              <button class="active" data-vp="desktop">Desktop</button>
+              <button data-vp="tablet">Tablet</button>
+              <button data-vp="mobile">Mobile</button>
+            </div>
+          </div>
+          <div class="cms-canvas-body" id="previewBody">
+            <div class="live-hero" id="heroPreview">
+              <span class="edit-tag">◆ Hero · click to edit</span>
+              <div class="mini-label">/ AI-Native Creative Studio · 2022—</div>
+              <h1>
+                <span class="outline">AI Creative</span><br/>
+                by <span class="glitch">ArtiMind</span>
+              </h1>
+              <p class="tagline">A creative studio where <b style="color:var(--ink)">Javier Pato</b> turns research models and weird data into stills, shorts and campaigns that read like films.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inspector -->
+        <div class="inspector">
+          <div class="inspector-head">
+            <button class="active">Content</button>
+            <button>Design</button>
+            <button>SEO</button>
+          </div>
+          <div class="inspector-body">
+            <div class="field">
+              <label>Micro label <span class="hint">max 60</span></label>
+              <input value="/ AI-Native Creative Studio · 2022—" id="f-label"/>
+              <div class="counter">34 / 60</div>
+            </div>
+            <div class="field">
+              <label>Headline · line 1</label>
+              <input value="AI Creative" id="f-h1"/>
+            </div>
+            <div class="field">
+              <label>Headline · line 2</label>
+              <input value="by ArtiMind" id="f-h2"/>
+            </div>
+            <div class="field">
+              <label>Highlight word <span class="hint">glitch effect</span></label>
+              <input value="ArtiMind"/>
+            </div>
+            <div class="field">
+              <label>Tagline</label>
+              <textarea>A creative studio where Javier Pato turns research models and weird data into stills, shorts and campaigns that read like films.</textarea>
+              <div class="counter">142 / 200</div>
+            </div>
+            <div class="field">
+              <label>Primary CTA</label>
+              <input value="Start a project"/>
+            </div>
+            <div class="field row">
+              <div>
+                <label>Counter 1</label>
+                <input value="60+ projects"/>
+              </div>
+              <div>
+                <label>Counter 2</label>
+                <input value="12 countries"/>
+              </div>
+            </div>
+            <div class="field">
+              <label>Accent color</label>
+              <div class="swatches">
+                <div class="swatch active" style="background:#ff2e2e"></div>
+                <div class="swatch" style="background:#ff8a00"></div>
+                <div class="swatch" style="background:#00eaff"></div>
+                <div class="swatch" style="background:#fff"></div>
+                <div class="swatch" style="background:#a3ff00"></div>
+              </div>
+            </div>
+            <div class="field">
+              <label>SEO preview · Google</label>
+              <div class="seo-preview">
+                <div class="url">artimind.art › home</div>
+                <div class="title">ArtiMind · AI Creative Studio — Javier Pato</div>
+                <div class="desc">Films, stills and campaigns made with generative AI. Based in Madrid, shipping worldwide.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== LEADS =============== -->
+    <section class="view" id="view-leads">
+      <div class="page-head">
+        <div>
+          <h1>Leads</h1>
+          <p class="sub">7 unread · 3 waiting for reply · 2 need follow-up this week.</p>
+        </div>
+        <div class="actions">
+          <button class="btn ghost">⤓ CSV</button>
+          <button class="btn">Filters <span class="chev">▾</span></button>
+          <button class="btn primary">Compose</button>
+        </div>
+      </div>
+
+      <div class="inbox">
+        <div class="list">
+          <div class="list-head">
+            <div class="filters">
+              <span class="chip active">All 24</span>
+              <span class="chip">Unread 7</span>
+              <span class="chip">Starred</span>
+            </div>
+          </div>
+          <div id="leadList"></div>
+        </div>
+        <div class="detail" id="leadDetail"></div>
+      </div>
+    </section>
+
+    <!-- =============== PROJECTS KANBAN =============== -->
+    <section class="view" id="view-projects">
+      <div class="page-head">
+        <div>
+          <h1>Projects</h1>
+          <p class="sub">11 active · €148k in pipeline · 3 shipping this week.</p>
+        </div>
+        <div class="actions">
+          <div class="seg">
+            <button class="active">Kanban</button>
+            <button>List</button>
+            <button>Calendar</button>
+          </div>
+          <button class="btn primary">+ New project</button>
+        </div>
+      </div>
+
+      <div class="kanban" id="kanban"></div>
+    </section>
+
+    <!-- =============== CLIENTS =============== -->
+    <section class="view" id="view-clients">
+      <div class="page-head">
+        <div>
+          <h1>Clients</h1>
+          <p class="sub">18 active relationships · €312k lifetime revenue · 6 on retainer.</p>
+        </div>
+        <div class="actions">
+          <button class="btn">Filter <span class="chev">▾</span></button>
+          <button class="btn primary">+ Add client</button>
+        </div>
+      </div>
+
+      <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpi">
+          <div class="l">Lifetime revenue</div>
+          <div class="n">€312.4k</div>
+          <div class="d">▲ €42k <span class="tag">this quarter</span></div>
+        </div>
+        <div class="kpi">
+          <div class="l">Avg. deal size</div>
+          <div class="n">€17.3k</div>
+          <div class="d">▲ 8% <span class="tag">YoY</span></div>
+        </div>
+        <div class="kpi">
+          <div class="l">Retention · 12m</div>
+          <div class="n">94%</div>
+          <div class="d">▲ 6pp <span class="tag">vs industry</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>All clients</h3>
+          <span class="hint">18 total</span>
+        </div>
+        <table class="tbl">
+          <thead>
+            <tr><th>Client</th><th>Industry</th><th>Projects</th><th>LTV</th><th>Last contact</th><th>Status</th></tr>
+          </thead>
+          <tbody id="clientsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =============== MEDIA LIBRARY =============== -->
+    <section class="view" id="view-media">
+      <div class="page-head">
+        <div>
+          <h1>Media library</h1>
+          <p class="sub">312 assets · 38.2 GB used of 100 GB plan.</p>
+        </div>
+        <div class="actions">
+          <button class="btn primary">+ Upload</button>
+        </div>
+      </div>
+
+      <div class="media-toolbar">
+        <div class="left">
+          <div class="seg">
+            <button class="active">All</button>
+            <button>Video</button>
+            <button>Stills</button>
+            <button>Audio</button>
+            <button>Docs</button>
+          </div>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-left:12px">Sort:</span>
+          <button class="btn ghost">Newest <span class="chev">▾</span></button>
+        </div>
+        <div class="seg">
+          <button class="active">▦ Grid</button>
+          <button>☰ List</button>
+        </div>
+      </div>
+
+      <div class="media-grid" id="mediaGrid"></div>
+    </section>
+
+    <!-- =============== BILLING =============== -->
+    <section class="view" id="view-billing">
+      <div class="page-head">
+        <div>
+          <h1>Billing</h1>
+          <p class="sub">€24.8k MRR · 2 invoices pending · Stripe connected.</p>
+        </div>
+        <div class="actions">
+          <button class="btn ghost">⤓ Export</button>
+          <button class="btn primary">+ New invoice</button>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>MRR</h3>
+            <span class="hint">recurring</span>
+          </div>
+          <div class="panel-body">
+            <div class="mrr-big"><span class="cur">€</span>24,820</div>
+            <div style="margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--ok)">▲ €2,640 vs last month</div>
+            <svg viewBox="0 0 240 50" style="width:100%;margin-top:14px" fill="none" stroke="var(--neon)" stroke-width="1.5">
+              <polyline points="0,40 20,38 40,36 60,30 80,32 100,24 120,26 140,18 160,16 180,12 200,10 220,6 240,4"/>
+            </svg>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Outstanding</h3>
+            <span class="hint">to be paid</span>
+          </div>
+          <div class="panel-body">
+            <div class="mrr-big" style="color:var(--warn)"><span class="cur">€</span>8,400</div>
+            <div style="margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--ink-dim)">2 invoices · oldest 12 days</div>
+            <div style="margin-top:14px"><button class="btn">Send reminder</button></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Revenue · YTD</h3>
+            <span class="hint">2026</span>
+          </div>
+          <div class="panel-body">
+            <div class="mrr-big"><span class="cur">€</span>184,320</div>
+            <div style="margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--ok)">▲ 42% vs 2025</div>
+            <div style="margin-top:14px;display:flex;gap:16px;font-family:var(--mono);font-size:11px">
+              <div><span style="color:var(--ink-faint)">GOAL:</span> €260k</div>
+              <div><span style="color:var(--ink-faint)">PACE:</span> 118%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Recent invoices</h3>
+          <div style="display:flex;gap:6px">
+            <span class="chip active">All</span>
+            <span class="chip">Paid</span>
+            <span class="chip">Pending</span>
+            <span class="chip">Overdue</span>
+          </div>
+        </div>
+        <table class="tbl">
+          <thead>
+            <tr><th>Invoice</th><th>Client</th><th>Issued</th><th>Due</th><th>Amount</th><th>Status</th></tr>
+          </thead>
+          <tbody id="invoicesTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =============== ANALYTICS =============== -->
+    <section class="view" id="view-analytics">
+      <div class="page-head">
+        <div>
+          <h1>Analytics</h1>
+          <p class="sub">Last 30 days · 8,412 visitors · 42 conversions (0.5%).</p>
+        </div>
+        <div class="actions">
+          <button class="btn">Last 30 days <span class="chev">▾</span></button>
+          <button class="btn ghost">⤓ Report</button>
+        </div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="l">Visitors</div><div class="n">8,412</div><div class="d">▲ 22%</div></div>
+        <div class="kpi"><div class="l">Pageviews</div><div class="n">26,104</div><div class="d">▲ 18%</div></div>
+        <div class="kpi"><div class="l">Avg. session</div><div class="n">2m 48s</div><div class="d">▲ 12s</div></div>
+        <div class="kpi"><div class="l">Conversion</div><div class="n">0.50%</div><div class="d down">▼ 0.08pp</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Visitors · last 30 days</h3>
+            <span class="hint">daily</span>
+          </div>
+          <div class="panel-body">
+            <svg class="chart" viewBox="0 0 320 180" preserveAspectRatio="none">
+              <g stroke="var(--line)" stroke-width="1">
+                <line x1="0" y1="45" x2="320" y2="45"/>
+                <line x1="0" y1="90" x2="320" y2="90"/>
+                <line x1="0" y1="135" x2="320" y2="135"/>
+              </g>
+              <g fill="var(--neon)" opacity=".85">
+                <rect x="2" y="110" width="6" height="70"/>
+                <rect x="12" y="100" width="6" height="80"/>
+                <rect x="22" y="125" width="6" height="55"/>
+                <rect x="32" y="95" width="6" height="85"/>
+                <rect x="42" y="85" width="6" height="95"/>
+                <rect x="52" y="115" width="6" height="65"/>
+                <rect x="62" y="105" width="6" height="75"/>
+                <rect x="72" y="80" width="6" height="100"/>
+                <rect x="82" y="75" width="6" height="105"/>
+                <rect x="92" y="90" width="6" height="90"/>
+                <rect x="102" y="100" width="6" height="80"/>
+                <rect x="112" y="70" width="6" height="110"/>
+                <rect x="122" y="65" width="6" height="115"/>
+                <rect x="132" y="85" width="6" height="95"/>
+                <rect x="142" y="60" width="6" height="120"/>
+                <rect x="152" y="55" width="6" height="125"/>
+                <rect x="162" y="70" width="6" height="110"/>
+                <rect x="172" y="50" width="6" height="130"/>
+                <rect x="182" y="45" width="6" height="135"/>
+                <rect x="192" y="65" width="6" height="115"/>
+                <rect x="202" y="40" width="6" height="140"/>
+                <rect x="212" y="35" width="6" height="145"/>
+                <rect x="222" y="50" width="6" height="130"/>
+                <rect x="232" y="30" width="6" height="150"/>
+                <rect x="242" y="25" width="6" height="155"/>
+                <rect x="252" y="42" width="6" height="138"/>
+                <rect x="262" y="20" width="6" height="160"/>
+                <rect x="272" y="18" width="6" height="162"/>
+                <rect x="282" y="35" width="6" height="145"/>
+                <rect x="292" y="15" width="6" height="165"/>
+                <rect x="302" y="12" width="6" height="168"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Top sources</h3>
+            <span class="hint">30d</span>
+          </div>
+          <div class="panel-body">
+            <div class="src-list">
+              <div class="src-row"><span class="n">Direct / typed</span><div class="bar-track"><div class="bar" style="width:82%"></div></div><span class="val">3,412</span></div>
+              <div class="src-row"><span class="n">Instagram</span><div class="bar-track"><div class="bar" style="width:68%"></div></div><span class="val">2,847</span></div>
+              <div class="src-row"><span class="n">Google / organic</span><div class="bar-track"><div class="bar" style="width:42%"></div></div><span class="val">1,124</span></div>
+              <div class="src-row"><span class="n">Are.na</span><div class="bar-track"><div class="bar" style="width:22%"></div></div><span class="val">612</span></div>
+              <div class="src-row"><span class="n">Twitter / X</span><div class="bar-track"><div class="bar" style="width:14%"></div></div><span class="val">291</span></div>
+              <div class="src-row"><span class="n">Behance</span><div class="bar-track"><div class="bar" style="width:6%"></div></div><span class="val">126</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:14px">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Top pages</h3>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Page</th><th>Views</th><th>Avg. time</th><th>Conv.</th></tr></thead>
+            <tbody>
+              <tr><td>/</td><td class="num">12,847</td><td class="num">3m 12s</td><td class="num">0.74%</td></tr>
+              <tr><td>/projects/ephemeral-rooms</td><td class="num">4,201</td><td class="num">4m 48s</td><td class="num">1.22%</td></tr>
+              <tr><td>/projects/signal-drift</td><td class="num">3,612</td><td class="num">3m 56s</td><td class="num">0.88%</td></tr>
+              <tr><td>/#pricing</td><td class="num">2,104</td><td class="num">2m 34s</td><td class="num">2.14%</td></tr>
+              <tr><td>/#about</td><td class="num">1,890</td><td class="num">1m 42s</td><td class="num">0.12%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Countries</h3>
+          </div>
+          <div class="panel-body">
+            <div class="src-list">
+              <div class="src-row"><span class="n">🇪🇸 Spain</span><div class="bar-track"><div class="bar" style="width:72%"></div></div><span class="val">32%</span></div>
+              <div class="src-row"><span class="n">🇺🇸 United States</span><div class="bar-track"><div class="bar" style="width:52%"></div></div><span class="val">18%</span></div>
+              <div class="src-row"><span class="n">🇬🇧 United Kingdom</span><div class="bar-track"><div class="bar" style="width:34%"></div></div><span class="val">11%</span></div>
+              <div class="src-row"><span class="n">🇩🇪 Germany</span><div class="bar-track"><div class="bar" style="width:24%"></div></div><span class="val">8%</span></div>
+              <div class="src-row"><span class="n">🇫🇷 France</span><div class="bar-track"><div class="bar" style="width:18%"></div></div><span class="val">6%</span></div>
+              <div class="src-row"><span class="n">🇳🇱 Netherlands</span><div class="bar-track"><div class="bar" style="width:14%"></div></div><span class="val">4%</span></div>
+              <div class="src-row"><span class="n">Others</span><div class="bar-track"><div class="bar" style="width:38%"></div></div><span class="val">21%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== SETTINGS =============== -->
+    <section class="view" id="view-settings">
+      <div class="page-head">
+        <div>
+          <h1>Settings</h1>
+          <p class="sub">Workspace, integrations, SEO defaults.</p>
+        </div>
+      </div>
+
+      <div class="settings-grid">
+        <div class="set-nav">
+          <a class="active">Workspace</a>
+          <a>SEO defaults</a>
+          <a>Domains</a>
+          <a>Integrations</a>
+          <a>Notifications</a>
+          <a>Team</a>
+          <a>Billing plan</a>
+          <a>Danger zone</a>
+        </div>
+        <div>
+          <div class="set-section">
+            <h3>Workspace</h3>
+            <div class="desc">Public-facing name and brand.</div>
+            <div class="field">
+              <label>Studio name</label>
+              <input value="ArtiMind"/>
+            </div>
+            <div class="field">
+              <label>Tagline</label>
+              <input value="AI-Native Creative Studio"/>
+            </div>
+            <div class="field row">
+              <div>
+                <label>Primary email</label>
+                <input value="hello@artimind.art"/>
+              </div>
+              <div>
+                <label>Timezone</label>
+                <select><option>Europe/Madrid (UTC+1)</option><option>Europe/London</option><option>America/New_York</option></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="set-section">
+            <h3>SEO defaults</h3>
+            <div class="desc">Applied site-wide unless overridden per page.</div>
+            <div class="field">
+              <label>Default title template</label>
+              <input value="%page% · ArtiMind"/>
+            </div>
+            <div class="field">
+              <label>Default description</label>
+              <textarea>AI-Native creative studio by Javier Pato. Films, stills and campaigns made with generative AI, based in Madrid.</textarea>
+            </div>
+            <div class="field row">
+              <div><label>Robots</label><select><option>index, follow</option><option>noindex, nofollow</option></select></div>
+              <div><label>Canonical</label><input value="https://artimind.art"/></div>
+            </div>
+          </div>
+
+          <div class="set-section">
+            <h3>Integrations</h3>
+            <div class="desc">Connected services.</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--line);border-radius:6px;background:var(--bg-2)">
+                <div style="width:36px;height:36px;border-radius:6px;background:#635bff;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px">S</div>
+                <div style="flex:1"><div style="font-weight:500">Stripe</div><div style="font-size:12px;color:var(--ink-faint);font-family:var(--mono)">acct_1P••••• · live mode</div></div>
+                <span class="pill paid no-dot"><span style="width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:6px;display:inline-block"></span>Connected</span>
+                <button class="btn ghost">Manage</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--line);border-radius:6px;background:var(--bg-2)">
+                <div style="width:36px;height:36px;border-radius:6px;background:#000;border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px">R</div>
+                <div style="flex:1"><div style="font-weight:500">Resend</div><div style="font-size:12px;color:var(--ink-faint);font-family:var(--mono)">hello@artimind.art · 2,147 sent / 3,000</div></div>
+                <span class="pill paid no-dot"><span style="width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:6px;display:inline-block"></span>Connected</span>
+                <button class="btn ghost">Manage</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--line);border-radius:6px;background:var(--bg-2)">
+                <div style="width:36px;height:36px;border-radius:6px;background:#0a0a0a;border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px">S</div>
+                <div style="flex:1"><div style="font-weight:500">Supabase</div><div style="font-size:12px;color:var(--ink-faint);font-family:var(--mono)">eu-west-1 · 142 MB / 500 MB</div></div>
+                <span class="pill paid no-dot"><span style="width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:6px;display:inline-block"></span>Connected</span>
+                <button class="btn ghost">Manage</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;border:1px dashed var(--line-strong);border-radius:6px">
+                <div style="width:36px;height:36px;border-radius:6px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-weight:700;font-size:12px">+</div>
+                <div style="flex:1"><div style="font-weight:500;color:var(--ink-dim)">Add integration</div><div style="font-size:12px;color:var(--ink-faint)">Slack, Notion, Linear, Google Analytics…</div></div>
+                <button class="btn">Browse</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="set-section">
+            <h3>Notifications</h3>
+            <div class="desc">How you want to be pinged when things happen.</div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)">
+                <div><div style="font-weight:500">New lead</div><div style="font-size:12px;color:var(--ink-faint)">Email to hello@artimind.art</div></div>
+                <label class="toggle"><input type="checkbox" checked><span class="track"></span></label>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)">
+                <div><div style="font-weight:500">Invoice paid</div><div style="font-size:12px;color:var(--ink-faint)">Slack + email</div></div>
+                <label class="toggle"><input type="checkbox" checked><span class="track"></span></label>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)">
+                <div><div style="font-weight:500">Invoice overdue</div><div style="font-size:12px;color:var(--ink-faint)">Daily digest</div></div>
+                <label class="toggle"><input type="checkbox" checked><span class="track"></span></label>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0">
+                <div><div style="font-weight:500">Weekly report</div><div style="font-size:12px;color:var(--ink-faint)">Every Monday 9:00</div></div>
+                <label class="toggle"><input type="checkbox"><span class="track"></span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================== DATA + JS ================== -->
+<script>
+  // ===== MOCK DATA =====
+  const LEADS = [
+    {id:1,name:"Mira Bergmann",co:"Studio NEON",email:"mira@neon.co",budget:"40k+",project:"Campaign film",status:"new",unread:true,t:"12m",
+     msg:"Hi Javier — we're launching a fragrance in September and want a 60s generative film + stills series. The brief is emotive, not techy. We loved 'Ephemeral Rooms'. Can we jump on a call next week? Budget is €45–60k. Best, Mira."},
+    {id:2,name:"Kenji Tanaka",co:"MILK / Tokyo",email:"k.tanaka@milk.jp",budget:"15–40k",project:"Key art",status:"new",unread:true,t:"1h",
+     msg:"We're producing a mini-series and need key art + motion posters in a 'grounded surrealism' style. Timeline is tight (4 weeks). Have you done TV key art before?"},
+    {id:3,name:"Alba Ferrer",co:"Independent",email:"alba@ferrer.art",budget:"5–15k",project:"Spark sprint",status:"new",unread:true,t:"3h",
+     msg:"Hi! Musician here. I want one short film for the album rollout — 90s max, dreamy. Your pricing page made sense. Ready to move fast."},
+    {id:4,name:"Lukas Weber",co:"Weber & Söhne",email:"lw@weber.de",budget:"15–40k",project:"Brand refresh",status:"contacted",unread:false,t:"Yesterday",
+     msg:"Following up from our coffee last month. Leadership has signed off on the refresh — keen to kick off in Q2."},
+    {id:5,name:"Noor Hassani",co:"Delta Ventures",email:"nh@delta.vc",budget:"40k+",project:"Portfolio film",status:"qualified",unread:false,t:"2d",
+     msg:"We'd like to explore a retainer — one short monthly for our portfolio companies. Can you share a rate card?"},
+    {id:6,name:"Theo Varga",co:"Varga / Berlin",email:"theo@varga.de",budget:"<5k",project:"Consultation",status:"lost",unread:false,t:"4d",
+     msg:"Got another studio, but thanks for the detailed response. Maybe next cycle."},
+    {id:7,name:"Sara Löfgren",co:"Form Studio",email:"s@form.se",budget:"15–40k",project:"Collab",status:"won",unread:false,t:"1w",
+     msg:"Deposit paid. Kickoff call booked for Tuesday — can't wait."},
+  ];
+
+  const PROJECTS = [
+    {id:1,t:"Ephemeral Rooms",cl:"TATE / lab",phase:"In-edit",prog:72,due:"Nov 24",overdue:false,owners:["JP","MR"],thumb:"linear-gradient(135deg,#3a1b5c,#0a0a0d)",col:2},
+    {id:2,t:"Signal Drift",cl:"MILK ✱ Tokyo",phase:"Capture",prog:45,due:"Dec 02",overdue:false,owners:["JP"],thumb:"linear-gradient(135deg,#8b0000,#1a0000)",col:1},
+    {id:3,t:"Cold Palette",cl:"Nordic Air",phase:"Delivery",prog:94,due:"Nov 18",overdue:false,owners:["JP","AK"],thumb:"linear-gradient(135deg,#0b6e8e,#05181e)",col:3},
+    {id:4,t:"Slow Glass",cl:"Obscura Films",phase:"Brief",prog:10,due:"Jan 15",overdue:false,owners:["JP"],thumb:"linear-gradient(135deg,#4a4a55,#0a0a0d)",col:0},
+    {id:5,t:"Breath Loop",cl:"Aesop collab",phase:"In-edit",prog:62,due:"Nov 30",overdue:false,owners:["JP","MR"],thumb:"linear-gradient(135deg,#264d2a,#05120a)",col:2},
+    {id:6,t:"Dust Engine",cl:"Weber & Söhne",phase:"Capture",prog:38,due:"Dec 10",overdue:false,owners:["JP","AK"],thumb:"linear-gradient(135deg,#704800,#1a0f00)",col:1},
+    {id:7,t:"Veil",cl:"Independent",phase:"Brief",prog:5,due:"Feb 02",overdue:false,owners:["JP"],thumb:"linear-gradient(135deg,#2a2a3d,#05050a)",col:0},
+    {id:8,t:"Pulse/Sur",cl:"Delta Ventures",phase:"Delivery",prog:88,due:"Nov 14",overdue:true,owners:["JP","MR","AK"],thumb:"linear-gradient(135deg,#b83280,#1a0512)",col:3},
+    {id:9,t:"Ghost Garden",cl:"Kew Digital",phase:"Brief",prog:0,due:"Mar 08",overdue:false,owners:["JP"],thumb:"linear-gradient(135deg,#1a4d3a,#05120c)",col:0},
+    {id:10,t:"Rust & Rose",cl:"Form Studio",phase:"Capture",prog:28,due:"Dec 22",overdue:false,owners:["JP"],thumb:"linear-gradient(135deg,#703030,#1a0505)",col:1},
+    {id:11,t:"Quiet Machine",cl:"TBD",phase:"In-edit",prog:55,due:"Dec 05",overdue:false,owners:["JP","MR"],thumb:"linear-gradient(135deg,#1a1a2e,#05050a)",col:2},
+  ];
+
+  const CLIENTS = [
+    {n:"MILK · Tokyo",in:"Film / TV",proj:4,ltv:"€58,400",t:"2d ago",s:"won"},
+    {n:"TATE / lab",in:"Art institution",proj:3,ltv:"€44,200",t:"Yesterday",s:"won"},
+    {n:"Aesop",in:"Consumer brand",proj:2,ltv:"€38,000",t:"1w ago",s:"won"},
+    {n:"Nordic Air",in:"Airline",proj:2,ltv:"€36,500",t:"3d ago",s:"won"},
+    {n:"Weber & Söhne",in:"Heritage brand",proj:3,ltv:"€29,800",t:"Yesterday",s:"won"},
+    {n:"Delta Ventures",in:"VC",proj:1,ltv:"€22,000",t:"2d ago",s:"pending"},
+    {n:"Form Studio",in:"Design agency",proj:2,ltv:"€18,600",t:"1w ago",s:"won"},
+    {n:"Obscura Films",in:"Film production",proj:1,ltv:"€15,400",t:"2w ago",s:"won"},
+    {n:"Kew Digital",in:"Botanical garden",proj:1,ltv:"€12,800",t:"Today",s:"new"},
+    {n:"Studio NEON",in:"Fragrance",proj:0,ltv:"€0",t:"12m ago",s:"new"},
+  ];
+
+  const MEDIA = [
+    {n:"ephemeral-rooms-final.mp4",sz:"184 MB",v:true,d:"01:02",th:"linear-gradient(135deg,#3a1b5c,#0a0a0d)"},
+    {n:"signal-drift-v3.mp4",sz:"312 MB",v:true,d:"00:48",th:"linear-gradient(135deg,#8b0000,#1a0000)"},
+    {n:"cold-palette-hero.jpg",sz:"8.4 MB",v:false,d:"",th:"linear-gradient(135deg,#0b6e8e,#05181e)"},
+    {n:"slow-glass-preview.mp4",sz:"94 MB",v:true,d:"00:22",th:"linear-gradient(135deg,#4a4a55,#0a0a0d)"},
+    {n:"breath-loop-main.mp4",sz:"201 MB",v:true,d:"01:15",th:"linear-gradient(135deg,#264d2a,#05120a)"},
+    {n:"dust-engine-still-01.jpg",sz:"6.2 MB",v:false,d:"",th:"linear-gradient(135deg,#704800,#1a0f00)"},
+    {n:"veil-research-01.jpg",sz:"4.8 MB",v:false,d:"",th:"linear-gradient(135deg,#2a2a3d,#05050a)"},
+    {n:"pulse-sur-final.mp4",sz:"422 MB",v:true,d:"02:04",th:"linear-gradient(135deg,#b83280,#1a0512)"},
+    {n:"ghost-garden-mood.jpg",sz:"12 MB",v:false,d:"",th:"linear-gradient(135deg,#1a4d3a,#05120c)"},
+    {n:"rust-rose-plate.jpg",sz:"7.1 MB",v:false,d:"",th:"linear-gradient(135deg,#703030,#1a0505)"},
+    {n:"quiet-machine-edit.mp4",sz:"156 MB",v:true,d:"00:56",th:"linear-gradient(135deg,#1a1a2e,#05050a)"},
+    {n:"brand-mark-2026.png",sz:"248 KB",v:false,d:"",th:"linear-gradient(135deg,#ff2e2e,#1a0000)"},
+  ];
+
+  const INVOICES = [
+    {id:"ARTI-2026-041",cl:"MILK · Tokyo",issue:"Nov 12",due:"Dec 12",amt:"€14,800",s:"pending"},
+    {id:"ARTI-2026-040",cl:"TATE / lab",issue:"Nov 08",due:"Dec 08",amt:"€12,200",s:"paid"},
+    {id:"ARTI-2026-039",cl:"Aesop",issue:"Nov 02",due:"Dec 02",amt:"€9,600",s:"paid"},
+    {id:"ARTI-2026-038",cl:"Weber & Söhne",issue:"Oct 24",due:"Nov 24",amt:"€8,400",s:"pending"},
+    {id:"ARTI-2026-037",cl:"Nordic Air",issue:"Oct 18",due:"Nov 18",amt:"€11,500",s:"paid"},
+    {id:"ARTI-2026-036",cl:"Form Studio",issue:"Oct 10",due:"Nov 10",amt:"€6,200",s:"paid"},
+    {id:"ARTI-2026-035",cl:"Obscura Films",issue:"Sep 28",due:"Oct 28",amt:"€4,800",s:"overdue"},
+  ];
+
+  // ===== UTILS =====
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+  function avColor(seed){
+    const colors=[["#ff2e2e","#8b0000"],["#3a7ae0","#0f3461"],["#16a34a","#064e3b"],["#d97706","#7c2d12"],["#8b5cf6","#3b0764"],["#ec4899","#500724"]];
+    let h=0; for(const c of seed) h=(h*31+c.charCodeAt(0))>>>0;
+    return colors[h%colors.length];
+  }
+  function initials(name){
+    return name.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+  }
+  function avHTML(name,cls=''){
+    const [a,b]=avColor(name);
+    return `<div class="av ${cls}" style="background:linear-gradient(135deg,${a},${b})">${initials(name)}</div>`;
+  }
+
+  // ===== VIEW SWITCHING =====
+  function go(view){
+    $$('.view').forEach(v=>v.classList.remove('active'));
+    $('#view-'+view).classList.add('active');
+    $$('.nav a').forEach(a=>a.classList.toggle('active', a.dataset.view===view));
+    $('#crumbCur').textContent = view[0].toUpperCase()+view.slice(1);
+    window.scrollTo({top:0});
+    location.hash = view;
+    localStorage.setItem('artimind-admin-view', view);
+  }
+  $$('#mainNav a[data-view]').forEach(a=>{
+    a.addEventListener('click', e=>{e.preventDefault(); go(a.dataset.view)});
+  });
+  // settings nav in sidebar too
+  $$('.nav a[data-view]').forEach(a=>{
+    a.addEventListener('click', e=>{e.preventDefault(); go(a.dataset.view)});
+  });
+
+  // initial view
+  const startView = location.hash.slice(1) || localStorage.getItem('artimind-admin-view') || 'dashboard';
+  if(startView && $('#view-'+startView)) go(startView);
+
+  // ===== THEME TOGGLE =====
+  $('#themeBtn').addEventListener('click', ()=>{
+    const cur = document.documentElement.dataset.theme || 'dark';
+    document.documentElement.dataset.theme = cur==='dark' ? 'light' : 'dark';
+    localStorage.setItem('artimind-admin-theme', document.documentElement.dataset.theme);
+  });
+  const savedTheme = localStorage.getItem('artimind-admin-theme');
+  if(savedTheme) document.documentElement.dataset.theme = savedTheme;
+
+  // ===== DASHBOARD: recent leads =====
+  $('#recentLeads').innerHTML = LEADS.slice(0,5).map(l=>`
+    <tr>
+      <td><div class="cell">${avHTML(l.name,'av-sm')}<div><div class="n">${l.name}</div><div class="e">${l.email}</div></div></div></td>
+      <td>${l.co}</td>
+      <td style="color:var(--ink-dim)">${l.project}</td>
+      <td class="num">${l.budget}</td>
+      <td><span class="pill ${l.status}">${l.status}</span></td>
+      <td style="text-align:right;color:var(--ink-faint);font-family:var(--mono);font-size:11px">${l.t}</td>
+    </tr>
+  `).join('');
+
+  // ===== DASHBOARD: active projects =====
+  $('#activeProjects').innerHTML = PROJECTS.slice(0,6).map(p=>`
+    <tr>
+      <td>
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="width:44px;height:28px;border-radius:4px;background:${p.thumb};flex:none"></div>
+          <div style="font-weight:500">${p.t}</div>
+        </div>
+      </td>
+      <td style="color:var(--ink-dim);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase">${p.cl}</td>
+      <td>${p.phase}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="flex:1;height:5px;background:var(--bg-3);border-radius:3px;overflow:hidden;min-width:80px"><div style="width:${p.prog}%;height:100%;background:var(--neon)"></div></div>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--ink-dim);min-width:32px">${p.prog}%</span>
+        </div>
+      </td>
+      <td style="font-family:var(--mono);font-size:11px;color:${p.overdue?'var(--danger)':'var(--ink-dim)'}">${p.due}${p.overdue?' ⚠':''}</td>
+    </tr>
+  `).join('');
+
+  // ===== LEADS: list + detail =====
+  function renderLeadList(){
+    $('#leadList').innerHTML = LEADS.map((l,i)=>`
+      <div class="lead-item ${l.unread?'unread':''} ${i===0?'selected':''}" data-id="${l.id}">
+        ${avHTML(l.name,'av-sm')}
+        <div class="body">
+          <div class="top"><span class="n">${l.name}</span><span class="t">${l.t}</span></div>
+          <div class="subj"><b style="color:var(--ink-dim)">${l.project}</b> — ${l.msg.slice(0,60)}…</div>
+          <div class="tags"><span class="pill no-dot">${l.co}</span><span class="pill ${l.status}">${l.status}</span></div>
+        </div>
+      </div>
+    `).join('');
+    $$('.lead-item').forEach(it=>{
+      it.addEventListener('click', ()=>{
+        $$('.lead-item').forEach(x=>x.classList.remove('selected'));
+        it.classList.add('selected');
+        it.classList.remove('unread');
+        renderLeadDetail(+it.dataset.id);
+      });
+    });
+  }
+  function renderLeadDetail(id){
+    const l = LEADS.find(x=>x.id===id);
+    $('#leadDetail').innerHTML = `
+      <div class="lead-detail-head">
+        <div style="display:flex;gap:16px;align-items:center">
+          ${avHTML(l.name,'av-lg')}
+          <div>
+            <h2>${l.name}</h2>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--ink-dim)">${l.email} · ${l.co}</div>
+            <div class="meta">
+              <span><span style="color:var(--ink-faint)">Project:</span> <b>${l.project}</b></span>
+              <span><span style="color:var(--ink-faint)">Budget:</span> <b>${l.budget}</b></span>
+              <span><span style="color:var(--ink-faint)">Source:</span> <b>landing / contact</b></span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span class="pill ${l.status}">${l.status}</span>
+          <button class="icobtn" title="Star">☆</button>
+          <button class="icobtn" title="Archive">⎙</button>
+        </div>
+      </div>
+      <div class="lead-body">
+        <p><b style="color:var(--ink);font-weight:500">Subject:</b> ${l.project}</p>
+        <p>${l.msg}</p>
+      </div>
+      <div class="lead-footer">
+        <button class="btn primary">↪ Reply</button>
+        <button class="btn">Mark qualified</button>
+        <button class="btn ghost">Convert to project →</button>
+      </div>
+    `;
+  }
+  renderLeadList();
+  renderLeadDetail(LEADS[0].id);
+
+  // ===== KANBAN =====
+  const COLS = [
+    {t:"Brief",cls:"s1"},
+    {t:"Capture",cls:"s2"},
+    {t:"In-edit",cls:"s3"},
+    {t:"Delivery",cls:"s4"},
+  ];
+  $('#kanban').innerHTML = COLS.map((c,i)=>{
+    const tasks = PROJECTS.filter(p=>p.col===i);
+    return `
+      <div class="col">
+        <div class="col-head">
+          <div class="t ${c.cls}">${c.t}</div>
+          <span class="c">${tasks.length}</span>
+        </div>
+        <div class="col-body">
+          ${tasks.map(t=>`
+            <div class="task">
+              <div class="thumb" style="background:${t.thumb}"></div>
+              <div class="title">${t.t}</div>
+              <div class="client">${t.cl}</div>
+              <div class="progress"><div class="bar" style="width:${t.prog}%"></div></div>
+              <div class="foot">
+                <div class="avs">${t.owners.map(o=>`<div class="av" style="background:linear-gradient(135deg,${avColor(o)[0]},${avColor(o)[1]})">${o}</div>`).join('')}</div>
+                <div class="due ${t.overdue?'warn':''}">${t.overdue?'⚠ ':''}${t.due}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // ===== CLIENTS =====
+  $('#clientsTable').innerHTML = CLIENTS.map(c=>`
+    <tr>
+      <td><div class="cell">${avHTML(c.n,'av-sm')}<div class="n">${c.n}</div></div></td>
+      <td style="color:var(--ink-dim)">${c.in}</td>
+      <td class="num">${c.proj}</td>
+      <td class="num" style="color:var(--ink)"><b>${c.ltv}</b></td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--ink-faint)">${c.t}</td>
+      <td><span class="pill ${c.s}">${c.s==='new'?'lead':c.s==='won'?'active':c.s}</span></td>
+    </tr>
+  `).join('');
+
+  // ===== MEDIA =====
+  $('#mediaGrid').innerHTML = `
+    <div class="dropzone">
+      <div class="big">Drop files to upload</div>
+      <div class="sm">MP4 · MOV · JPG · PNG · up to 500 MB each</div>
+    </div>
+    ${MEDIA.map(m=>`
+      <div class="asset ${m.v?'video':''}">
+        <div class="thumb" style="background:${m.th}">${m.v?`<div class="dur">${m.d}</div>`:''}</div>
+        <div class="info">
+          <span class="n" title="${m.n}">${m.n}</span>
+          <span class="m">${m.sz}</span>
+        </div>
+      </div>
+    `).join('')}
+  `;
+
+  // ===== INVOICES =====
+  $('#invoicesTable').innerHTML = INVOICES.map(i=>`
+    <tr>
+      <td style="font-family:var(--mono);font-size:12px">${i.id}</td>
+      <td>${i.cl}</td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--ink-dim)">${i.issue}</td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--ink-dim)">${i.due}</td>
+      <td class="amount">${i.amt}</td>
+      <td><span class="pill ${i.s}">${i.s}</span></td>
+    </tr>
+  `).join('');
+
+  // ===== CMS: tree clicks =====
+  $$('.tree-item[data-block]').forEach(t=>{
+    t.addEventListener('click', ()=>{
+      $$('.tree-item').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+
+  // ===== CMS: live preview bind =====
+  const fLabel = $('#f-label'), fH1 = $('#f-h1'), fH2 = $('#f-h2');
+  function syncPreview(){
+    const hero = $('#heroPreview');
+    hero.querySelector('.mini-label').textContent = fLabel.value;
+    hero.querySelector('h1 .outline').textContent = fH1.value;
+    const secondLine = hero.querySelectorAll('h1')[0].innerHTML.split('<br>')[1];
+    // we'll just rebuild the h1:
+    hero.querySelector('h1').innerHTML = `<span class="outline">${fH1.value}</span><br/>${fH2.value.replace(/ArtiMind/, '<span class="glitch">ArtiMind</span>')}`;
+  }
+  [fLabel,fH1,fH2].forEach(el=> el && el.addEventListener('input', syncPreview));
+
+  // viewport switcher
+  $$('#previewVP button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      $$('#previewVP button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      const body = $('#previewBody');
+      body.classList.remove('preview-mobile');
+      if(b.dataset.vp==='mobile') body.classList.add('preview-mobile');
+    });
+  });
+
+  // swatches
+  $$('.swatch').forEach(s=>{
+    s.addEventListener('click', ()=>{
+      s.parentElement.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));
+      s.classList.add('active');
+      document.documentElement.style.setProperty('--neon', s.style.background);
+    });
+  });
+
+  // keyboard: / focuses search
+  window.addEventListener('keydown', e=>{
+    if(e.key==='/' && e.target.tagName!=='INPUT' && e.target.tagName!=='TEXTAREA'){
+      e.preventDefault(); $('.search').focus();
+    }
+  });
+
+  // ===== AUTH CHECK =====
+  function checkAuth(){
+    const token = localStorage.getItem('supabase.auth.token');
+    const session = localStorage.getItem('supabase.auth.session');
+    if(!token && !session){
+      window.location.href = '/admin.html';
+      return false;
+    }
+    return true;
+  }
+
+  document.querySelectorAll('[data-logout]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      localStorage.removeItem('supabase.auth.token');
+      localStorage.removeItem('supabase.auth.session');
+      window.location.href = '/admin.html';
+    });
+  });
+
+  if(!checkAuth()){
+    document.body.style.display = 'none';
+  }
+</script>
+</body>
+</html>
