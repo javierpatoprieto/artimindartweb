@@ -37,6 +37,11 @@ export default async function handler(req, res) {
     }
 
     const passwordHash = hashPassword(password);
+    console.log('Password received:', password);
+    console.log('Hash generated:', passwordHash);
+    console.log('Hash in DB:', data.password_hash);
+    console.log('Match:', passwordHash === data.password_hash);
+
     if (passwordHash !== data.password_hash) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
