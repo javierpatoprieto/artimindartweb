@@ -1,28 +1,24 @@
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from 'next/server';
 
-function hashPassword(password) {
+function hashPassword(password: string) {
   return crypto.createHash('sha256').update(password + 'salt').digest('hex');
 }
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
+export async function POST(req: NextRequest) {
   try {
-    const { username, password } = req.body;
+    const { username, password } = await req.json();
 
     if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password required' });
+      return NextResponse.json({ error: 'Username and password required' }, { status: 400 });
     }
 
     const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY,
+      process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+      process.env.SUPABASE_SERVICE_ROLE_KEY || '',
       {
         auth: { persistSession: false },
-        global: { fetch: globalThis.fetch }
       }
     );
 
@@ -33,13 +29,13 @@ export default async function handler(req, res) {
       .single();
 
     if (error || !data) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
     const passwordHash = hashPassword(password);
 
     if (passwordHash !== data.password_hash) {
-      return res.status(401).json({
+      return NextResponse.json({
         error: 'Invalid credentials',
         debug: {
           passwordReceived: password,
@@ -47,18 +43,18 @@ export default async function handler(req, res) {
           hashInDB: data.password_hash,
           match: passwordHash === data.password_hash
         }
-      });
+      }, { status: 401 });
     }
 
     const token = Buffer.from(`${data.id}:${Date.now()}`).toString('base64');
 
-    return res.status(200).json({
+    return NextResponse.json({
       success: true,
       token,
       message: 'Login successful',
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Auth error:', err.message);
-    return res.status(500).json({ error: 'Server error: ' + err.message });
+    return NextResponse.json({ error: 'Server error: ' + err.message }, { status: 500 });
   }
 }

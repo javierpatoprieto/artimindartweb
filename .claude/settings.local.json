@@ -65,7 +65,8 @@
       "Bash(tar -t)",
       "Read(//c/Users/javie/.claude/projects/C--Users-javie-Web-Artimindart/c3dc1a14-30dd-42e8-a046-9ce454d20ab1/tool-results/**)",
       "Bash(gunzip -c webfetch-1776461228294-btfct0.bin)",
-      "Bash(node -e \"const bcrypt = require\\('bcryptjs'\\); bcrypt.hash\\('David2025!', 10, \\(err, hash\\) => { if \\(err\\) console.error\\(err\\); else console.log\\(hash\\); }\\);\")"
+      "Bash(node -e \"const bcrypt = require\\('bcryptjs'\\); bcrypt.hash\\('David2025!', 10, \\(err, hash\\) => { if \\(err\\) console.error\\(err\\); else console.log\\(hash\\); }\\);\")",
+      "Bash(node -e \"const crypto = require\\('crypto'\\); const hash = crypto.createHash\\('sha256'\\).update\\('David2025!salt'\\).digest\\('hex'\\); console.log\\(hash\\);\")"
     ]
   }
 }
