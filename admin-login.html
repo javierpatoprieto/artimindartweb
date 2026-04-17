@@ -110,22 +110,25 @@
   </div>
 
   <h1>Admin Access</h1>
-  <p class="subtitle">Magic link sent to your email</p>
+  <p class="subtitle">Login with your credentials</p>
 
   <form id="loginForm">
     <div class="field">
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" placeholder="javierpato@gmail.com" required/>
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="javier" required/>
     </div>
 
-    <button type="submit" class="btn" id="submitBtn">Send magic link</button>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="••••••••" required/>
+    </div>
+
+    <button type="submit" class="btn" id="submitBtn">Login</button>
     <div class="message" id="message"></div>
   </form>
 
-  <div class="divider">or</div>
-
-  <div class="info">
-    <strong>Magic link login:</strong> We'll send you a secure link. Click it in your email to access the dashboard. No password needed.
+  <div class="info" style="margin-top:24px">
+    <strong>Secure login:</strong> Your credentials are verified on our secure servers.
   </div>
 </div>
 
@@ -133,49 +136,48 @@
   const form = document.getElementById('loginForm');
   const btn = document.getElementById('submitBtn');
   const msg = document.getElementById('message');
-  const emailInput = document.getElementById('email');
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
 
-  // Check if returning from auth callback
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('auth') === 'callback' || params.get('auth') === 'success') {
-    msg.textContent = '✓ Login successful! Redirecting...';
-    msg.className = 'message show success';
-    setTimeout(() => window.location.href = '/admin-dashboard.html', 1500);
+  // Check if already logged in
+  if (localStorage.getItem('admin_token')) {
+    window.location.href = '/admin-dashboard.html';
   }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const email = emailInput.value;
+    const username = usernameInput.value;
+    const password = passwordInput.value;
     btn.disabled = true;
-    btn.textContent = 'Sending...';
+    btn.textContent = 'Logging in...';
     msg.className = 'message';
 
     try {
       const res = await fetch('/api/admin/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await res.json();
 
-      if (res.ok) {
-        msg.textContent = `✓ Check your email (${email}) for the magic link`;
+      if (res.ok && data.token) {
+        localStorage.setItem('admin_token', data.token);
+        msg.textContent = '✓ Login successful! Redirecting...';
         msg.className = 'message show success';
-        emailInput.disabled = true;
-        btn.textContent = 'Link sent';
+        setTimeout(() => window.location.href = '/admin-dashboard.html', 1500);
       } else {
-        msg.textContent = data.error || 'Failed to send link';
+        msg.textContent = data.error || 'Invalid credentials';
         msg.className = 'message show error';
         btn.disabled = false;
-        btn.textContent = 'Try again';
+        btn.textContent = 'Login';
       }
     } catch (err) {
       msg.textContent = 'Connection error. Try again.';
       msg.className = 'message show error';
       btn.disabled = false;
-      btn.textContent = 'Try again';
+      btn.textContent = 'Login';
       console.error(err);
     }
   });

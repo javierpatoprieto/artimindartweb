@@ -1,62 +1,48 @@
 import { supabaseAdmin } from '../../lib/supabase.js';
+import bcrypt from 'bcryptjs';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     return handleLogin(req, res);
-  } else if (req.method === 'GET') {
-    return handleCallback(req, res);
   }
-
   return res.status(405).json({ error: 'Method not allowed' });
 }
 
 async function handleLogin(req, res) {
   try {
-    const { email } = req.body;
-    const adminEmail = process.env.ADMIN_EMAIL || 'javierpato@gmail.com';
+    const { username, password } = req.body;
 
-    if (email !== adminEmail) {
-      return res.status(403).json({ error: 'Admin access only' });
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password required' });
     }
 
-    // Send magic link
-    const { error } = await supabaseAdmin.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${process.env.VERCEL_URL || 'https://artimind.art'}/admin.html?auth=callback`,
-      },
-    });
+    // Query admin_users table
+    const { data, error } = await supabaseAdmin
+      .from('admin_users')
+      .select('id, username, password_hash')
+      .eq('username', username)
+      .single();
 
-    if (error) throw error;
+    if (error || !data) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Verify password
+    const isValid = await bcrypt.compare(password, data.password_hash);
+    if (!isValid) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Create a simple token (base64 encoded id + timestamp)
+    const token = Buffer.from(`${data.id}:${Date.now()}`).toString('base64');
 
     return res.status(200).json({
       success: true,
-      message: 'Check your email for the magic link.',
+      token,
+      message: 'Login successful',
     });
   } catch (err) {
     console.error('Auth error:', err);
-    return res.status(500).json({ error: err.message });
-  }
-}
-
-async function handleCallback(req, res) {
-  try {
-    const { code } = req.query;
-
-    if (!code) {
-      return res.status(400).json({ error: 'Auth code required' });
-    }
-
-    const { data, error } = await supabaseAdmin.auth.exchangeCodeForSession(code);
-
-    if (error) throw error;
-
-    // Store session token in secure httpOnly cookie
-    res.setHeader('Set-Cookie', `auth_token=${data.session.access_token}; Path=/; HttpOnly; Secure; SameSite=Lax`);
-
-    return res.redirect(302, '/admin.html');
-  } catch (err) {
-    console.error('Auth callback error:', err);
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: 'Server error' });
   }
 }
