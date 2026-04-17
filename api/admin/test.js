@@ -1,31 +1,33 @@
 export default async function handler(req, res) {
+  // Test 1: Fetch to Google
+  let googleTest = null;
+  try {
+    const g = await fetch('https://www.google.com', { timeout: 5000 });
+    googleTest = { ok: g.ok, status: g.status };
+  } catch (err) {
+    googleTest = { error: err.message };
+  }
+
+  // Test 2: Fetch to Supabase
+  let supabaseTest = null;
   try {
     const url = process.env.SUPABASE_URL;
     const roleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    // Test basic fetch to Supabase
     const testUrl = `${url}/rest/v1/admin_users?select=username`;
-    const response = await fetch(testUrl, {
-      method: 'GET',
+
+    const s = await fetch(testUrl, {
       headers: {
         'apikey': roleKey,
         'Authorization': `Bearer ${roleKey}`,
       }
     });
-
-    const data = await response.json();
-
-    return res.json({
-      success: response.ok,
-      status: response.status,
-      statusText: response.statusText,
-      data: data
-    });
+    supabaseTest = { ok: s.ok, status: s.status };
   } catch (err) {
-    return res.json({
-      success: false,
-      error: err.message,
-      type: err.constructor.name
-    });
+    supabaseTest = { error: err.message };
   }
+
+  return res.json({
+    google: googleTest,
+    supabase: supabaseTest
+  });
 }
