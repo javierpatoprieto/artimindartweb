@@ -1,0 +1,4 @@
+{
+  "buildCommand": "cd artimindart-platform && npm run build",
+  "outputDirectory": "artimindart-platform/.next"
+}
