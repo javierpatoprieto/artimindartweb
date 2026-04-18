@@ -1,0 +1,25 @@
+═══════════════════════════════════════════════════════════════════════════
+  VARIABLES DE ENTORNO PARA VERCEL
+═══════════════════════════════════════════════════════════════════════════
+
+Para pegar en Vercel Dashboard → Settings → Environment Variables
+
+Nombre: NEXT_PUBLIC_SUPABASE_URL
+Valor: https://wmjihxgwcsdqlgqssbik.supabase.co
+
+---
+
+Nombre: NEXT_PUBLIC_SUPABASE_ANON_KEY
+Valor: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtamloeGd3Y3NkcWxncXNzYmlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDIwMzMsImV4cCI6MjA5MTA3ODAzM30.yM2qjVNvVRru-ORjs-u5GL73Ch-Vq1QVwEtybnmBphM
+
+---
+
+Nombre: SUPABASE_SERVICE_ROLE_KEY
+Valor: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtamloeGd3Y3NkcWxncXNzYmlrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTUwMjAzMywiZXhwIjoyMDkxMDc4MDMzfQ.PHV_OyZtZUjtQV5S-ZWfgeCewc69puSdoe1BbH2CjWI
+
+---
+
+Nombre: ADMIN_EMAIL
+Valor: javierpatoprieto@gmail.com
+
+═══════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,54 @@
+# Vercel Ignore - Exclude from deployment
+
+# Local development
+.claude
+.git
+.gitignore
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files (secrets)
+.env.local
+.env.local.example
+.env
+
+# Documentation (not needed in production)
+*.md
+SETUP.md
+BACKEND.md
+DEPLOYMENT_CHECKLIST.md
+DEPLOYMENT_STATUS.md
+QUICK_ACCESS.md
+VERCEL_DEPLOYMENT.md
+DEPLOY_NOW.md
+VERCEL_SETUP_AUTOMATED.md
+ENV_VARS_VERCEL.txt
+
+# Development scripts
+start.sh
+server-frontend.js
+*.sh
+
+# IDE / Editor
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Misc
+.DS_Store
+Thumbs.db
+
+# Previous builds
+.next
+dist
+build
+
+# Supabase SQL
+supabase-schema.sql
+
+# Frontend HTML (served by Next.js)
+# index.html and others should be moved to artimindart-platform/public/
