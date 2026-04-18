@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase-client';
+import { supabase, validateSupabaseConfig } from '@/lib/supabase-client';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -33,6 +33,7 @@ export default function SignUpPage() {
     }
 
     try {
+      validateSupabaseConfig();
       const { data, error } = await supabase.auth.signUp({
         email,
         password,

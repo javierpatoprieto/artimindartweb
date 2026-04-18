@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase-client';
+import { supabase, validateSupabaseConfig } from '@/lib/supabase-client';
 import ProjectsTable from '@/components/ProjectsTable';
 
 interface User {
@@ -21,6 +21,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const getUser = async () => {
       try {
+        validateSupabaseConfig();
         const { data } = await supabase.auth.getUser();
         if (data?.user) {
           setUser({
