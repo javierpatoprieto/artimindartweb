@@ -2,6 +2,8 @@ import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
+export const runtime = 'nodejs';
+
 function hashPassword(password: string) {
   return crypto.createHash('sha256').update(password + 'salt').digest('hex');
 }
