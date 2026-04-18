@@ -1,0 +1,139 @@
+export default function AdminDashboard() {
+  return (
+    <html lang="en" data-theme="dark">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>ArtiMind · Admin Dashboard</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" />
+        <style>{`
+          :root{
+            --bg:#07070a;
+            --bg-2:#0d0d12;
+            --ink:#f2f1ec;
+            --ink-dim:#a8a6a0;
+            --ink-faint:#5a5952;
+            --line:rgba(255,255,255,0.07);
+            --neon:#ff2e2e;
+            --neon-soft:rgba(255,46,46,0.35);
+            --display:'Space Grotesk','Helvetica Neue',Helvetica,Arial,sans-serif;
+            --sans:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;
+            --ease:cubic-bezier(.2,.7,.2,1);
+          }
+          html[data-theme="light"]{
+            --bg:#f5f3ec;
+            --bg-2:#ecead f;
+            --ink:#0a0a0a;
+            --ink-dim:#3b3a33;
+            --ink-faint:#8f8c81;
+            --line:rgba(0,0,0,0.1);
+            --neon:#d90000;
+            --neon-soft:rgba(217,0,0,0.28);
+          }
+
+          *{box-sizing:border-box}
+          html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+          body{min-height:100vh;padding:20px}
+
+          .header{
+            display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;
+          }
+
+          .logo{
+            display:flex;align-items:center;gap:10px;
+          }
+          .logo-dot{
+            width:28px;height:28px;border-radius:6px;background:var(--neon);display:flex;align-items:center;justify-content:center;
+            font-family:var(--display);font-weight:700;color:#fff;font-size:14px;box-shadow:0 0 20px -4px var(--neon);
+          }
+          .logo-txt{
+            font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.01em;
+          }
+
+          .logout-btn{
+            padding:10px 20px;background:var(--bg-2);border:1px solid var(--line);color:var(--ink);border-radius:6px;
+            font-family:var(--sans);font-weight:500;font-size:14px;cursor:pointer;transition:border .2s;
+          }
+          .logout-btn:hover{border-color:var(--neon)}
+
+          .container{max-width:1200px;margin:0 auto}
+
+          h1{
+            font-family:var(--display);font-weight:600;font-size:32px;margin:0 0 12px;letter-spacing:-.01em;
+          }
+          .subtitle{
+            color:var(--ink-dim);font-size:16px;margin:0 0 32px;
+          }
+
+          .dashboard-grid{
+            display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:40px;
+          }
+
+          .card{
+            padding:24px;border:1px solid var(--line);background:var(--bg-2);border-radius:12px;
+          }
+          .card h2{
+            font-family:var(--display);font-weight:600;font-size:18px;margin:0 0 8px;
+          }
+          .card p{
+            color:var(--ink-dim);font-size:14px;margin:0;
+          }
+
+          .info{
+            background:var(--bg);padding:16px;border-radius:6px;font-size:13px;color:var(--ink-dim);line-height:1.6;
+            border:1px solid var(--line);margin-top:24px;font-family:'JetBrains Mono',monospace;
+          }
+        `}</style>
+      </head>
+      <body>
+        <div className="header">
+          <div className="logo">
+            <div className="logo-dot">A</div>
+            <div className="logo-txt">ArtiMind</div>
+          </div>
+          <button className="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+
+        <div className="container">
+          <h1>Admin Dashboard</h1>
+          <p className="subtitle">Welcome to the admin panel</p>
+
+          <div className="dashboard-grid">
+            <div className="card">
+              <h2>Active Users</h2>
+              <p>Manage user accounts and permissions</p>
+            </div>
+            <div className="card">
+              <h2>Content Management</h2>
+              <p>Edit and publish site content</p>
+            </div>
+            <div className="card">
+              <h2>Analytics</h2>
+              <p>View usage statistics and reports</p>
+            </div>
+          </div>
+
+          <div className="info">
+            <strong>Token:</strong> <span id="tokenDisplay"></span>
+          </div>
+        </div>
+
+        <script dangerouslySetInnerHTML={{__html: `
+          const token = localStorage.getItem('admin_token');
+          if (!token) {
+            window.location.href = '/admin-login';
+          } else {
+            document.getElementById('tokenDisplay').textContent = token;
+          }
+
+          document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('admin_token');
+            window.location.href = '/admin-login';
+          });
+        `}} />
+      </body>
+    </html>
+  );
+}
