@@ -67,7 +67,10 @@
       "Bash(gunzip -c webfetch-1776461228294-btfct0.bin)",
       "Bash(node -e \"const bcrypt = require\\('bcryptjs'\\); bcrypt.hash\\('David2025!', 10, \\(err, hash\\) => { if \\(err\\) console.error\\(err\\); else console.log\\(hash\\); }\\);\")",
       "Bash(node -e \"const crypto = require\\('crypto'\\); const hash = crypto.createHash\\('sha256'\\).update\\('David2025!salt'\\).digest\\('hex'\\); console.log\\(hash\\);\")",
-      "mcp__Claude_in_Chrome__switch_browser"
+      "mcp__Claude_in_Chrome__switch_browser",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__computer",
+      "mcp__Claude_in_Chrome__tabs_create_mcp"
     ]
   }
 }
