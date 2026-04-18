@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "cd artimindart-platform && npm run dev",
-    "build": "cd artimindart-platform && npm run build",
+    "build": "cd artimindart-platform && npm install --legacy-peer-deps && npm run build",
     "start": "cd artimindart-platform && npm run start"
   },
   "dependencies": {
