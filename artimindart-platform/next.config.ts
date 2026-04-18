@@ -1,10 +1,5 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* Disable static generation for dynamic pages */
-  experimental: {
-    dynamicIO: true,
-  },
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;
