@@ -6,6 +6,8 @@ function hashPassword(password: string) {
   return crypto.createHash('sha256').update(password + 'salt').digest('hex');
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const { username, password } = await req.json();
