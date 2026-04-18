@@ -1,0 +1,36 @@
+{
+  "buildCommand": "cd artimindart-platform && npm install --legacy-peer-deps && npm run build",
+  "installCommand": "npm install && cd artimindart-platform && npm install --legacy-peer-deps",
+  "devCommand": "cd artimindart-platform && npm run dev",
+  "framework": "nextjs",
+  "env": [
+    {
+      "key": "NEXT_PUBLIC_SUPABASE_URL",
+      "description": "Supabase project URL"
+    },
+    {
+      "key": "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      "description": "Supabase anonymous key"
+    },
+    {
+      "key": "SUPABASE_SERVICE_ROLE_KEY",
+      "description": "Supabase service role key"
+    },
+    {
+      "key": "RESEND_API_KEY",
+      "description": "Resend API key for email"
+    },
+    {
+      "key": "STRIPE_SECRET_KEY",
+      "description": "Stripe secret key"
+    },
+    {
+      "key": "STRIPE_WEBHOOK_SECRET",
+      "description": "Stripe webhook secret"
+    },
+    {
+      "key": "ADMIN_EMAIL",
+      "description": "Admin email allowed to login"
+    }
+  ]
+}
